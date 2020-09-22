@@ -3,11 +3,13 @@ import sqlalchemy
 
 
 def getCloudSqlUrl():
-    db_user = os.environ["DB_USER"]
-    db_pass = os.environ["DB_PASS"]
-    db_name = os.environ["DB_NAME"]
+    db_user = os.environ.get("DB_USER", "db_user_placeholder")
+    db_pass = os.environ.get("DB_PASS", "db_pass_placeholder")
+    db_name = os.environ.get("DB_NAME", "db_name_placeholder")
     db_socket_dir = os.environ.get("DB_SOCKET_DIR", "/cloudsql")
-    cloud_sql_connection_name = os.environ["CLOUD_SQL_CONNECTION_NAME"]
+    cloud_sql_connection_name = os.environ.get(
+        "CLOUD_SQL_CONNECTION_NAME", "cloud_sql_placeholder"
+    )
 
     cloudSqlUrl = sqlalchemy.engine.url.URL(
         # Equivalent URL:
