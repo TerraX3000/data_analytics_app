@@ -1,4 +1,4 @@
-appTemplate.code-workspace
-app_venv
+data_analytics_venv
 .vscode
 *.pyc
+*.code-workspace
