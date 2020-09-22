@@ -1,0 +1,4 @@
+appTemplate.code-workspace
+app_venv
+.vscode
+*.pyc
