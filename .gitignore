@@ -2,3 +2,7 @@ data_analytics_venv
 .vscode
 *.pyc
 *.code-workspace
+matplotlib_practice/
+jupyternb_practice/
+.ipynb_checkpoints/
+testfiles/
