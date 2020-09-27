@@ -86,7 +86,9 @@ def create_app(config_class):
         # )
 
     from main_app.main.routes import main_bp
+    from main_app.datavisualizationsamples.routes import datavisualizationsamples_bp
 
     app.register_blueprint(main_bp)
+    app.register_blueprint(datavisualizationsamples_bp)
 
     return app
