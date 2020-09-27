@@ -1,4 +1,7 @@
 runtime: python38
 
+sampledata_dir: /tmp/bokeh_data
+
 env_variables:
   CLOUD_STORAGE_BUCKET: "alpha816.appspot.com"
+  

@@ -3,6 +3,9 @@ from bokeh.layouts import column
 from bokeh.models import Slider, ColumnDataSource
 from bokeh.util.hex import axial_to_cartesian, hexbin
 from bokeh.transform import linear_cmap
+import bokeh.sampledata
+
+bokeh.sampledata.download()
 from bokeh.sampledata.iris import flowers
 from bokeh.sampledata.stocks import AAPL
 import numpy as np
