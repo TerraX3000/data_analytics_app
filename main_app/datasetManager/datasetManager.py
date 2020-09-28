@@ -11,7 +11,7 @@ from main_app.main.utilityfunctions import printLogEntry
 def uploadDataset(datasetName, csvFile, comment):
     printLogEntry("Running uploadDataset()")
     df = pd.read_csv(csvFile)
-    datasetSqlName = str.replace(datasetName, " ", "_")
+    datasetSqlName = "dataset_" + str.replace(datasetName, " ", "_")
     newDataset = DatasetManager(
         datasetName=datasetName, datasetSqlName=datasetSqlName, comment=comment
     )
