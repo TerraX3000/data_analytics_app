@@ -1,0 +1,128 @@
+{% extends 'layout.html'%}
+{% block content %}
+
+{% macro macro_display_formfield(formfield, w3ResponsiveGridClass) %}
+<div class="{{w3ResponsiveGridClass}}">
+    {{ formfield.label(class="w3-text-green w3-large") }}
+    {% if formfield.errors %}
+    {{ formfield(class="w3-select is-invalid") }}
+    <div class="invalid-feedback">
+        {% for error in formfield.errors %}
+        <span>{{ error }}</span>
+        {% endfor %}
+    </div>
+    {% else %}
+    {{ formfield(class="w3-select  w3-section", id=False) }}
+    {% endif %}
+</div>
+{% endmacro %}
+
+<div class="w3-container w3-amber w3-row">
+    <div class="w3-third">
+        <h2>{{title}}</h2>
+    </div>
+</div>
+
+<div class="w3-container w3-center">
+</div>
+
+<div class="w3-bar w3-blue">
+    <button id='button_ViewResourcesTab' class="w3-bar-item w3-button tablink"
+        onclick="openTab(event, 'ViewResourcesTab', 'DataAnalytics')">View Resources</button>
+    <button id='button_AddResourcesTab' class="w3-bar-item w3-button tablink"
+        onclick="openTab(event, 'AddResourcesTab','DataAnalytics')">Add Resources</button>
+</div>
+
+<div class="infoTab" id="ViewResourcesTab" style="display:block">
+    <div class="w3-container w3-padding-large w3-margin-right w3-margin-left w3-section">
+        {% for researchInfo in researchInfoLogs %}
+        <div class="w3-section w3-bottombar">
+            <div class="w3-row-padding">
+                <h3 class="w3-threequarter"> {{researchInfo.title}} </h3>
+                <div class="w3-right">
+                    <form action="{{ url_for('researchInfo_bp.update_Resource', researchInfo_id=researchInfo.id) }}"
+                        method="POST">
+                        <button type="submit"><i class="fa fa-pencil fa-fw"></i>Edit</button>
+
+                        <button type="button"
+                            onclick="document.getElementById('deleteModal{{researchInfo.id}}').style.display='block'"><i
+                                class="fa fa-trash fa-fw"></i>Delete</button>
+                    </form>
+                </div>
+
+                <a class="w3-col l12 w3-padding-small w3-small w3-text-grey"
+                    href="{{researchInfo.weblink}}">{{researchInfo.weblink}}<i
+                        class="w3-padding-small fa fa-external-link" aria-hidden="true"></i></a>
+                <i style="white-space: pre-wrap"
+                    class="w3-col l12 w3-padding-small w3-medium">{{researchInfo.description}} </i>
+            </div>
+        </div>
+
+        <!-- Delete Modal -->
+        <div class="w3-modal" id="deleteModal{{researchInfo.id}}">
+            <div class="w3-container">
+                <div class="w3-modal-content" style="width:50%">
+                    <header class="w3-container w3-red">
+                        <span onclick="document.getElementById('deleteModal{{researchInfo.id}}').style.display='none'"
+                            class="w3-button w3-display-topright">&times;</span>
+                        <h2>Delete This Resource?</h2>
+                    </header>
+                    <footer class="w3-container w3-margin-top w3-white w3-center">
+                        <div class="w3-bar">
+                            <form action="{{ url_for('researchInfo_bp.delete_Resource', log_id=researchInfo.id) }}"
+                                method="POST">
+                                <button type="button" class="w3-button w3-large"
+                                    onclick="document.getElementById('deleteModal{{researchInfo.id}}').style.display='none'">Cancel</button>
+                                <input class="w3-button w3-red w3-large" type="submit" value="Delete">
+                            </form>
+                        </div>
+                    </footer>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+<div class="infoTab" id="AddResourcesTab" style="display:none">
+    <div class="w3-container">
+        <form class="w3-container w3-padding-large" method="POST"
+            action="{{ url_for('researchInfo_bp.display_researchInfo') }}" enctype="multipart/form-data">
+            {{ addResearchInfoForm.csrf_token(id = False) }}
+            <fieldset class="w3-container w3-padding-large w3-hover-border-green">
+                <legend class="w3-xlarge">Add New Research Resource</legend>
+                <div class="w3-row-padding">
+                    {{ macro_display_formfield(addResearchInfoForm.title, "w3-threequarter") }}
+                </div>
+                <div class="w3-row-padding">
+                    {{ macro_display_formfield(addResearchInfoForm.weblink, "w3-threequarter") }}
+                </div>
+                <div class="w3-row-padding">
+                    {{ macro_display_formfield(addResearchInfoForm.description, "w3-threequarter") }}
+                </div>
+                <div class="w3-row w3-padding-large">
+                    {{ addResearchInfoForm.submitResearchInfo(class="w3-btn w3-blue w3-large") }}
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+
+<script type="text/javascript" src="{{ url_for('static', filename="js/pageTabs.js") }}"></script>
+<!-- Reload page to last loaded tab -->
+<script type='text/javascript'>
+    document.addEventListener("DOMContentLoaded", function (event) {
+        selected_tab = 'DataAnalytics_selected_tab';
+        var selectedTab = sessionStorage.getItem(selected_tab);
+        if (selectedTab) {
+            document.getElementById("button_" + selectedTab).click();
+        } else {
+            document.getElementById("button_ViewResources").click();
+        }
+    });
+</script>
+
+
+{% endblock content %}

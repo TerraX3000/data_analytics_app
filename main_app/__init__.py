@@ -89,10 +89,12 @@ def create_app(config_class):
     from main_app.datavisualizationsamples.routes import datavisualizationsamples_bp
     from main_app.datasetManager.routes import datasetManager_bp
     from main_app.datasetAnalyzer.routes import datasetAnalyzer_bp
+    from main_app.researchInfo.routes import researchInfo_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(datavisualizationsamples_bp)
     app.register_blueprint(datasetManager_bp)
     app.register_blueprint(datasetAnalyzer_bp)
+    app.register_blueprint(researchInfo_bp)
 
     return app
