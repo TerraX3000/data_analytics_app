@@ -1,8 +1,9 @@
 from flask import render_template, redirect, url_for, flash, request, Blueprint
+from alembic import op
 from main_app import db
 from main_app.models import DatasetManager
 from main_app.datasetManager.forms import uploadDatasetForm
-from main_app.datasetManager.datasetManager import uploadDataset
+from main_app.datasetManager.datasetManager import uploadDataset, drop_table
 from main_app.main.utilityfunctions import printLogEntry, printFormErrors, save_File
 
 datasetManager_bp = Blueprint("datasetManager_bp", __name__)
@@ -42,8 +43,10 @@ def delete_Dataset(log_id):
 
     log = DatasetManager.query.get_or_404(log_id)
     LogDetails = f"{(log_id)} {log.datasetName}"
+    datasetSqlName = log.datasetSqlName
     printLogEntry("Running delete_Dataset(" + LogDetails + ")")
     db.session.delete(log)
     db.session.commit()
+    drop_table(datasetSqlName)
     flash("Dataset has been deleted!", "success")
     return redirect(url_for("datasetManager_bp.display_datasetManager"))
