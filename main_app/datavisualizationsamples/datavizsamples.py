@@ -382,7 +382,8 @@ def dateTimePlot():
         plot_height=400,
         x_axis_type="datetime",
     )
-    df = pd.DataFrame(AAPL)
+    # df = pd.DataFrame(AAPL)
+    df = pd.read_csv("bokeh_sample_data/AAPL.csv")
     df["date"] = pd.to_datetime(df["date"])
     p.line(df["date"], df["close"], color="navy", alpha=0.5)
     return p
