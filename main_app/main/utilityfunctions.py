@@ -27,3 +27,12 @@ def printFormErrors(form):
     if form.errors:
         printLogEntry("Form errors:" + str(form.errors))
     return
+
+
+def createDropDownChoices(choiceslist):
+    DropDownList = []
+    for choice in choiceslist:
+        DropDownList.append((choice, choice))
+    DropDownChoices = tuple(DropDownList)
+    print(DropDownChoices)
+    return DropDownChoices

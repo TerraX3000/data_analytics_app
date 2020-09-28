@@ -1,0 +1,76 @@
+{% extends 'layout.html'%}
+{% block content %}
+
+<head> {{ resources|safe }} </head>
+
+{% macro macro_display_formfield(formfield, w3ResponsiveGridClass) %}
+<div class="{{w3ResponsiveGridClass}}">
+    {{ formfield.label(class="w3-text-green w3-large") }}
+    {% if formfield.errors %}
+    {{ formfield(class="w3-select is-invalid") }}
+    <div class="invalid-feedback">
+        {% for error in formfield.errors %}
+        <span>{{ error }}</span>
+        {% endfor %}
+    </div>
+    {% else %}
+    {{ formfield(class="w3-select  w3-section", id=False) }}
+    {% endif %}
+</div>
+{% endmacro %}
+
+<div class="w3-container w3-amber w3-row">
+    <div class="w3-third">
+        <h2>{{title}}</h2>
+    </div>
+</div>
+
+<div class="w3-container w3-center">
+</div>
+
+<div class="w3-container">
+    <form class="w3-container w3-padding-large" method="POST"
+        action="{{ url_for('datasetAnalyzer_bp.display_datasetAnalyzer') }}" enctype="multipart/form-data">
+        {{ selectDatasetToAnalyzeForm.csrf_token(id = False) }}
+        <fieldset class="w3-container w3-padding-large w3-hover-border-green">
+            <legend class="w3-xlarge">Choose Dataset to Analyze</legend>
+            <div class="w3-row-padding">
+                {{ macro_display_formfield(selectDatasetToAnalyzeForm.datasetName, "w3-half") }}
+            </div>
+            <div class="w3-row w3-padding-large">
+                {{ selectDatasetToAnalyzeForm.submitDatasetToAnalyze(class="w3-btn w3-blue w3-large") }}
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+<div class="w3-container">
+    <form class="w3-container w3-padding-large" method="POST"
+        action="{{ url_for('datasetAnalyzer_bp.display_datasetAnalyzer') }}" enctype="multipart/form-data">
+        {{ selectColumnToAnalyzeForm.csrf_token(id = False) }}
+        <fieldset class="w3-container w3-padding-large w3-hover-border-green">
+            <legend class="w3-xlarge">Choose Column to Analyze</legend>
+            <div class="w3-row-padding">
+                {{ macro_display_formfield(selectColumnToAnalyzeForm.columnName, "w3-half") }}
+            </div>
+            <div class="w3-row w3-padding-large">
+                {{ selectColumnToAnalyzeForm.submitColumnToAnalyze(class="w3-btn w3-blue w3-large") }}
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+<div class="w3-panel"></div>
+<div class="w3-row-padding">
+    <div class="w3-col l4 w3-padding-16" id="dataplot"></div>
+</div>
+<script>
+    (async () => {
+        const response = await fetch('/dataplot');
+        const item = await response.json();
+        Bokeh.embed.embed_item(item, "dataplot");
+    })();
+</script>
+
+
+{% endblock content %}
