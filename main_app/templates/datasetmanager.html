@@ -1,0 +1,102 @@
+{% extends 'layout.html'%}
+{% block content %}
+
+{% macro macro_display_formfield(formfield, w3ResponsiveGridClass) %}
+<div class="{{w3ResponsiveGridClass}}">
+    {{ formfield.label(class="w3-text-green w3-large") }}
+    {% if formfield.errors %}
+    {{ formfield(class="w3-select is-invalid") }}
+    <div class="invalid-feedback">
+        {% for error in formfield.errors %}
+        <span>{{ error }}</span>
+        {% endfor %}
+    </div>
+    {% else %}
+    {{ formfield(class="w3-select  w3-section", id=False) }}
+    {% endif %}
+</div>
+{% endmacro %}
+
+<div class="w3-container w3-amber w3-row">
+    <div class="w3-third">
+        <h2>{{title}}</h2>
+    </div>
+</div>
+
+<div class="w3-container w3-center">
+</div>
+
+<div class="w3-container w3-padding-large w3-margin-right w3-margin-left w3-section">
+    <table class="w3-padding-large w3-table w3-bordered w3-striped w3-hoverable">
+        <thead>
+            <tr class="w3-blue">
+                <th>Dataset Name</th>
+                <th>Created</th>
+                <th>Comment</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody class="w3-main">
+            {% for dataset in datasets %}
+            <tr>
+                <td>{{ dataset.datasetName }}</td>
+                <td>{{ dataset.createDateTime | datetimefilter }}</td>
+                <td>{{ dataset.comment }}</td>
+                <td><button type="button" class="w3-btn w3-red"
+                        onclick="document.getElementById('deleteModal{{dataset.id}}').style.display='block'">Delete</button>
+                </td>
+            </tr>
+
+            <!-- Modal -->
+            <div class="w3-modal" id="deleteModal{{dataset.id}}">
+                <div class="w3-container">
+                    <div class="w3-modal-content" style="width:50%">
+                        <header class="w3-container w3-red">
+                            <span onclick="document.getElementById('deleteModal{{dataset.id}}').style.display='none'"
+                                class="w3-button w3-display-topright">&times;</span>
+                            <h2>Delete This Dataset?</h2>
+                        </header>
+                        <footer class="w3-container w3-margin-top w3-white w3-center">
+                            <div class="w3-bar">
+                                <form action="{{ url_for('datasetManager_bp.delete_Dataset', log_id=dataset.id) }}"
+                                    method="POST">
+                                    <button type="button" class="w3-button w3-large"
+                                        onclick="document.getElementById('deleteModal{{dataset.id}}').style.display='none'">Cancel</button>
+                                    <input class="w3-button w3-red w3-large" type="submit" value="Delete">
+                                </form>
+                            </div>
+                        </footer>
+                    </div>
+                </div>
+            </div>
+
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+<div class="w3-container">
+    <form class="w3-container w3-padding-large" method="POST"
+        action="{{ url_for('datasetManager_bp.display_datasetManager') }}" enctype="multipart/form-data">
+        {{ uploadDatasetForm.csrf_token(id = False) }}
+        <fieldset class="w3-container w3-padding-large w3-hover-border-green">
+            <legend class="w3-xlarge">Upload Dataset</legend>
+            <div class="w3-row-padding">
+                {{ macro_display_formfield(uploadDatasetForm.datasetName, "w3-half") }}
+            </div>
+            <div class="w3-row-padding">
+                {{ macro_display_formfield(uploadDatasetForm.comment, "w3-half") }}
+            </div>
+            <div class="w3-row-padding">
+                {{ macro_display_formfield(uploadDatasetForm.csvDatasetFile, "w3-half") }}
+            </div>
+            <div class="w3-row w3-padding-large">
+                {{ uploadDatasetForm.submitUploadDataset(class="w3-btn w3-blue w3-large") }}
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+
+{% endblock content %}

@@ -6,3 +6,5 @@ matplotlib_practice/
 jupyternb_practice/
 .ipynb_checkpoints/
 testfiles/
+*.db
+datasets/
