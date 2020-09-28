@@ -8,9 +8,11 @@ class Config:
 
     cloudSqlUrl = getCloudSqlUrl()
     cloudSqlEngineOptions = getSqlEngineOptions()
+    print("cloudSqlUrl =", cloudSqlUrl)
+    print("cloudSqlEngineOptions =", cloudSqlEngineOptions)
 
-    # SQLALCHEMY_DATABASE_URI = cloudSqlUrl
-    # SQLALCHEMY_ENGINE_OPTIONS = cloudSqlEngineOptions
+    SQLALCHEMY_DATABASE_URI = cloudSqlUrl
+    SQLALCHEMY_ENGINE_OPTIONS = cloudSqlEngineOptions
 
     # Set environment variables necessary for Google login and API usage
     USE_GOOGLE_LOGIN_AND_API = "True"
