@@ -61,7 +61,7 @@ def showGridPlot():
     p17 = directedAreaPlot()
     p18 = stackedAreaPlot()
     p19 = colorMappedImagePlot()
-    p20 = dateTimePlot()
+    # p20 = dateTimePlot()
 
     # Define column and row spacers
     # Spacer: margin - property type: Tuple ( Int , Int , Int , Int )
@@ -86,7 +86,7 @@ def showGridPlot():
             [rowsp],
             [p16, sp1, p17, sp2, p18],
             [rowsp],
-            [p19, sp1, p20],
+            [p19, sp1],
             [rowsp],
         ]
     )

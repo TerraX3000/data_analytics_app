@@ -5,7 +5,7 @@ from bokeh.util.hex import axial_to_cartesian, hexbin
 from bokeh.transform import linear_cmap
 import bokeh.sampledata
 
-bokeh.sampledata.download()
+# bokeh.sampledata.download()
 from bokeh.sampledata.iris import flowers
 from bokeh.sampledata.stocks import AAPL
 import numpy as np
