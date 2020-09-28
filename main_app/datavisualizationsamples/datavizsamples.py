@@ -7,7 +7,8 @@ import bokeh.sampledata
 
 # bokeh.sampledata.download()
 from bokeh.sampledata.iris import flowers
-from bokeh.sampledata.stocks import AAPL
+
+# from bokeh.sampledata.stocks import AAPL
 import numpy as np
 from math import pi
 import pandas as pd
