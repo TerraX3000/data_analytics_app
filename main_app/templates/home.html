@@ -11,7 +11,55 @@
     <h2>Use Google Chrome for best results</h2>
 </div>
 <div class="w3-container w3-center">
-    <h2>Welcome to the home page</h2>
+    <h2>Data Analytics Project App</h2>
+</div>
+<div class="w3-container">
+    <h3> Purpose</h3>
+    <p> This application serves as an in-progress prototype to demonstrate data analytic and data visualization methods.
+    </p>
+    <h3> Features</h3>
+    <h5> <i class="fa fa-area-chart fa-fw"></i> Data Visualization Samples</h5>
+    <p> Includes a varierty of data visualization types created using the <a
+            href="https://docs.bokeh.org/en/latest/index.html#">Bokeh</a> visualization package.</p>
+    <h5> <i class="fa fa-cogs fa-fw"></i> Data Manager</h5>
+    <p> Provides the capability to upload new datasets to the SQL database as well as delete datasets.</p>
+    <h5> <i class="fa fa-sliders fa-fw"></i> Data Analyzer</h5>
+    <p> Provides capabilities to analyze datasets which have been uploaded.</p>
+    <h5> <i class="fa fa-book fa-fw"></i> Research Info</h5>
+    <p> Provides capability to capture online resources and references related to the purpose of this app. </p>
+    <h3> Technical Description</h3>
+    <h5> Development</h5>
+    <p> This software is written in Python and utilizes several packages including <a
+            href="https://flask.palletsprojects.com/en/1.1.x/">Flask</a> (web framework), <a
+            href="https://www.sqlalchemy.org/">SQLAlechmy</a>
+        (database object-relational mapper), <a href="https://pandas.pydata.org/">Pandas</a> (data analysis), and <a
+            href="https://docs.bokeh.org/en/latest/index.html#">Bokeh</a> (data visualization). </p>
+    <h5> Web Hosting</h5>
+    <p> The application is hosted on the Google Cloud Platform. It takes advantages of <a
+            href="https://cloud.google.com/run">Google Cloud Run</a>, a fully managed compute platform for deploying and
+        scaling containerized applications quickly and securely.</p>
+    <h5> SQL Database</h5>
+    <p> The app relies on a MySQL database provided by <a href="https://cloud.google.com/sql/docs">Google Cloud SQL</a>,
+        a fully-managed database service that helps you set up, maintain, manage, and administer your relational
+        databases on Google Cloud Platform. While the app directly connects to the MySQL database, it is also possible
+        to connect to and administer the database using <a href="https://www.phpmyadmin.net/">phpmyadmin</a>, a free
+        software tool written in PHP, intended to handle the administration of MySQL over the Web, and <a
+            href="https://www.mysql.com/products/workbench/">MySQLWorkbench</a>, a unified visual tool for database
+        architects, developers, and DBAs.</p>
+    <p> The SQL database for this project may be viewed by using phpMyAdmin as follows:</p>
+    <p>Web address: <a
+            href="https://phpmyadmin-dot-alpha816.uk.r.appspot.com/">https://phpmyadmin-dot-alpha816.uk.r.appspot.com/</a>
+    </p>
+    <p> User name: dataviewer </p>
+    <p> Password: utcdata123 </p>
+    <h5> Source Code</h5>
+    <p> All source code is available on GitHub at <a href="https://github.com/TerraX3000/data_analytics_app">
+            https://github.com/TerraX3000/data_analytics_app</a></p>
+    <h3>Project Management</h3>
+    <p> Development work is managed using <a href="https://trello.com">Trello</a>, a free, online project collaboration
+        tool. The Trello board for this project is viewable at <a
+            href="https://trello.com/b/4hCgsGxN/data-analysis-project">https://trello.com/b/4hCgsGxN/data-analysis-project.</a>
+    </p>
 </div>
 
 {% endblock content %}
