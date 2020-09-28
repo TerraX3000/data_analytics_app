@@ -33,11 +33,11 @@ def plotColumn(dataset_id, columnName):
 
     # create a new plot with a title and axis labels
     p = figure(
-        title="Plot of" + datasetName + ":" + columnName,
-        x_axis_label="x",
-        y_axis_label="y",
+        title="Dataset Name: " + datasetName,
+        x_axis_label="Index",
+        y_axis_label=columnName,
         sizing_mode="fixed",
-        plot_width=400,
+        plot_width=1100,
         plot_height=400,
     )
 

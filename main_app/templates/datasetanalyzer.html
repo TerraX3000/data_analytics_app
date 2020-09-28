@@ -27,6 +27,29 @@
 
 <div class="w3-container w3-center">
 </div>
+<div class="w3-container">
+    <h5> Purpose</h5>
+    <p> This data analyzer will generate data visualizations of user-selected columns from uploaded datasets.
+    </p>
+    <h5> Current Features</h5>
+    <p> The dataset analyzer will create a simple line plot. The x-axis displays the index value of the dataset. The
+        y-axis displays the user-selected column value. </p>
+    <h5> Limitations</h5>
+    <p> The plotted column must include numerical data. Non-numerical data will result in an error or a blank plot.</p>
+    <h5> Example </h5>
+    <p> The Titanic dataset contains information on the Titanic passengers. Several columns in this dataset contain
+        numerial values which are suitable for plotting:</p>
+    <ul>
+        <li> Index</li>
+        <li> PassengerId</li>
+        <li> Survived</li>
+        <li> Pclass</li>
+        <li> Age</li>
+        <li> SibSp</li>
+        <li> Parch</li>
+        <li> Fare</li>
+    </ul>
+</div>
 
 <div class="w3-container">
     <form class="w3-container w3-padding-large" method="POST"
@@ -43,7 +66,7 @@
         </fieldset>
     </form>
 </div>
-
+{% if selectColumnToAnalyzeForm.columnName.choices %}
 <div class="w3-container">
     <form class="w3-container w3-padding-large" method="POST"
         action="{{ url_for('datasetAnalyzer_bp.display_datasetAnalyzer') }}" enctype="multipart/form-data">
@@ -59,17 +82,92 @@
         </fieldset>
     </form>
 </div>
+{% endif %}
 
 <div class="w3-panel"></div>
 <div class="w3-row-padding">
     <div class="w3-col l4 w3-padding-16" id="dataplot"></div>
 </div>
 <script>
-    (async () => {
-        const response = await fetch('/dataplot');
-        const item = await response.json();
-        Bokeh.embed.embed_item(item, "dataplot");
-    })();
+
+    document.addEventListener("DOMContentLoaded", async function (event) {
+        var savedDataAnalyzerSettings_JSON = sessionStorage.getItem("SavedDataAnalyzerSettings");
+        if (savedDataAnalyzerSettings_JSON) {
+            if (savedDataAnalyzerSettings_JSON != "") {
+                // Convert the saved settings into a JSON
+                var savedDataAnalyzerSettings = JSON.parse(savedDataAnalyzerSettings_JSON);
+                if (savedDataAnalyzerSettings['datasetName']) {
+                    my_dataset_id = savedDataAnalyzerSettings['datasetName']['value'];
+                } else {
+                    my_dataset_id = false
+                }
+                if (savedDataAnalyzerSettings['columnName']) {
+                    my_columnName = savedDataAnalyzerSettings['columnName']['value'];
+                } else {
+                    my_columnName = false
+                }
+                console.log('dataset_id =' + my_dataset_id);
+                if (my_dataset_id && my_columnName) {
+                    const response = await fetch("/dataplot/" + my_dataset_id + '&' + my_columnName);
+                    const item = await response.json();
+                    Bokeh.embed.embed_item(item, "dataplot");
+                    // On form reset, clear the saved learning lab details and reload the form
+                    // console.log('Reset form pressed');
+                    sessionStorage.setItem("SavedDataAnalyzerSettings", "");
+                }
+            }
+        }
+    });
+</script>
+
+<script type='text/javascript'>
+    // Create event listener to save dataset details in session variable on form submit
+    var submitDataset = document.querySelector("input[id=submitDatasetToAnalyze]");
+    var submitColumn = document.querySelector("input[id=submitColumnToAnalyze]");
+    if (submitDataset) {
+        submitDataset.addEventListener("click", function () { saveDataAnalyzerSettings(event); });
+    }
+    if (submitColumn) {
+        submitColumn.addEventListener("click", function () { saveDataAnalyzerSettings(event); });
+    }
+    function saveDataAnalyzerSettings(evt) {
+
+        selectFields = document.querySelectorAll("select");
+
+        // Initialize the JSON object to hold the properties and values
+        var object = {};
+        // Cycle through the selectfields
+        for (i = 0; i < selectFields.length; i++) {
+            // Ignore any select fields by replacing 'ignore' with id
+            if (selectFields[i].name == "datasetName" || selectFields[i].name == "columnName") {
+                // console.log('selectfield = ' + selectFields[i].id)
+                // Get the selectField id and value
+                input_name = selectFields[i].name;
+                input_type = selectFields[i].type;
+                input_value = selectFields[i].value;
+                input_disabled = selectFields[i].disabled;
+                input_className = selectFields[i].className;
+                input_label = selectFields[i].labels[0];
+                if (input_label) {
+                    // console.log('label = ' + input_label.textContent);
+                    input_label_className = input_label.className;
+                } else {
+                    input_label_className = "";
+                }
+                // console.log(inputFields[i].type + " " + input_name + ' = ' + input_value);
+                // Store the select field id and value in the JSON object
+                // object[input_name] = input_value;
+                object[input_name] = { type: input_type, value: input_value, disabled: input_disabled, className: input_className, label_className: input_label_className };
+            }
+        }
+
+        // Convert the JSON object to a string
+        myJSON = JSON.stringify(object);
+        console.log('myJSON =' + myJSON);
+        // Save the JSON object to the session variable
+        sessionStorage.setItem("SavedDataAnalyzerSettings", myJSON);
+    }
+
 </script>
 
 

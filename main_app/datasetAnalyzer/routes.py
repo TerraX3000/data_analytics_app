@@ -58,11 +58,10 @@ def plotDatasetColumn():
     )
 
 
-@datasetAnalyzer_bp.route("/dataplot")
-def showDataPlot():
+@datasetAnalyzer_bp.route("/dataplot/<int:dataset_id>&<columnName>")
+def showDataPlot(dataset_id, columnName):
     # Create plots
-    dataset_id = 4
-    columnName = "Age"
+    # columnName = "Age"
     p = plotColumn(dataset_id, columnName)
     # Define column and row spacers
     # Spacer: margin - property type: Tuple ( Int , Int , Int , Int )
