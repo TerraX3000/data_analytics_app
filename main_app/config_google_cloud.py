@@ -8,8 +8,8 @@ class Config:
 
     cloudSqlUrl = getCloudSqlUrl()
     cloudSqlEngineOptions = getSqlEngineOptions()
-    print("cloudSqlUrl =", cloudSqlUrl)
-    print("cloudSqlEngineOptions =", cloudSqlEngineOptions)
+    # print("cloudSqlUrl =", cloudSqlUrl)
+    # print("cloudSqlEngineOptions =", cloudSqlEngineOptions)
 
     SQLALCHEMY_DATABASE_URI = cloudSqlUrl
     SQLALCHEMY_ENGINE_OPTIONS = cloudSqlEngineOptions
