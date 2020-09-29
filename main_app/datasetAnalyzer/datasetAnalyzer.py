@@ -11,12 +11,12 @@ from main_app.main.referenceData import getDatasetSqlName
 def analyzeDataset(dataset_id):
     log = DatasetManager.query.get_or_404(dataset_id)
     datasetSqlName = log.datasetSqlName
-    print("datasetSqlName =", datasetSqlName)
-    sqlStatement = f"SELECT * FROM {datasetSqlName}"
-    print("sqlStatement =", sqlStatement)
-    df = pd.read_sql_query(sqlStatement, db.engine)
-    print(df.shape)
-    print(df.columns)
+    # print("datasetSqlName =", datasetSqlName)
+    # sqlStatement = f"SELECT * FROM {datasetSqlName}"
+    # print("sqlStatement =", sqlStatement)
+    df = pd.read_sql_table(datasetSqlName, db.engine)
+    # print(df.shape)
+    # print(df.columns)
     columnChoices = createDropDownChoices(df.columns)
     return columnChoices
 
