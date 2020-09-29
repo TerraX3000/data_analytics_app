@@ -31,14 +31,17 @@ def display_datasetAnalyzer():
             printLogEntry("Dataset to Analyze Form Submitted")
             datasetName = selectDatasetToAnalzerFormDetails.datasetName.data
             columnNames = analyzeDataset(datasetName)
-            print(columnNames)
+            # print(columnNames)
             selectColumnToAnalyzeFormDetails.columnName.choices = columnNames
-    printFormErrors(selectDatasetToAnalzerFormDetails)
+        printFormErrors(selectDatasetToAnalzerFormDetails)
 
     if "submitColumnToAnalyze" in request.form:
         if selectColumnToAnalyzeFormDetails.validate_on_submit():
             printLogEntry("Column to Analyze Form Submitted")
             columnName = selectColumnToAnalyzeFormDetails.columnName.data
+        print(request.form)
+        printFormErrors(selectColumnToAnalyzeFormDetails)
+        flash("New plot created!", "success")
 
     return render_template(
         "datasetanalyzer.html",
@@ -69,5 +72,4 @@ def showDataPlot(dataset_id, columnName):
     # The values in the tuple are ordered as follows - Margin-Top, Margin-Right, Margin-Bottom and Margin-Left
 
     # Create a grid layout of plots
-
     return json.dumps(json_item(p))

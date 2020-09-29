@@ -27,6 +27,7 @@ def display_researchInfo():
             )
             db.session.add(newResearchInfo)
             db.session.commit()
+            flash("New resource has been added!", "success")
             return redirect(url_for("researchInfo_bp.display_researchInfo"))
 
     printFormErrors(addResearchInfoFormDetails)
