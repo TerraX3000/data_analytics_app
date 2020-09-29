@@ -33,6 +33,7 @@ def display_datasetManager():
                 datasetName = uploadDatasetFormDetails.datasetName.data
                 comment = uploadDatasetFormDetails.comment.data
                 uploadDataset(datasetName, uploadedDatasetFile, comment)
+                flash("Dataset has been uploaded!", "success")
                 return redirect(url_for("datasetManager_bp.display_datasetManager"))
 
     printFormErrors(uploadDatasetFormDetails)
