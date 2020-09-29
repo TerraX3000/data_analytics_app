@@ -1,3 +1,6 @@
+from flask import current_app
+import os
+
 from bokeh.plotting import figure, output_file, show
 from bokeh.layouts import column
 from bokeh.models import Slider, ColumnDataSource
@@ -383,7 +386,10 @@ def dateTimePlot():
         x_axis_type="datetime",
     )
     # df = pd.DataFrame(AAPL)
-    df = pd.read_csv("bokeh_sample_data/AAPL.csv")
-    df["date"] = pd.to_datetime(df["date"])
-    p.line(df["date"], df["close"], color="navy", alpha=0.5)
+    file_path = os.path.join(
+        current_app.root_path, "static/bokeh_sample_data", "AAPL.csv"
+    )
+    df = pd.read_csv(file_path)
+    df["Date"] = pd.to_datetime(df["Date"])
+    p.line(df["Date"], df["Close"], color="navy", alpha=0.5)
     return p
