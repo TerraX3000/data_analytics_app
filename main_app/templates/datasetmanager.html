@@ -48,15 +48,18 @@
             <tr class="w3-blue">
                 <th>Dataset Name</th>
                 <th>Created</th>
+                <th>Rows x Columns</th>
                 <th>Comment</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody class="w3-main">
-            {% for dataset in datasets %}
+            {% for dataset, datasetDetail in zip(datasets, datasetDetails) %}
+
             <tr>
                 <td>{{ dataset.datasetName }}</td>
                 <td>{{ dataset.createDateTime | datetimefilter }}</td>
+                <td>{{ datasetDetail}}</td>
                 <td>{{ dataset.comment }}</td>
                 <td><button type="button" class="w3-btn w3-red"
                         onclick="document.getElementById('deleteModal{{dataset.id}}').style.display='block'">Delete</button>

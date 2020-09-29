@@ -34,3 +34,14 @@ def drop_table(table_name):
         print(f"Deleting {table_name} table")
         base.metadata.drop_all(engine, [table], checkfirst=True)
     return
+
+
+def getRowsAndColumns(dataset_id):
+    dataset = DatasetManager.query.get_or_404(dataset_id)
+    datasetSqlName = dataset.datasetSqlName
+    # sqlStatement = f"SELECT * FROM {datasetSqlName}"
+    # df = pd.read_sql_query(sqlStatement, db.engine)
+    df = pd.read_sql_table(datasetSqlName, db.engine)
+    # print(df.shape)
+    rowsAndColumns = str(df.shape[0]) + " x " + str(df.shape[1])
+    return rowsAndColumns

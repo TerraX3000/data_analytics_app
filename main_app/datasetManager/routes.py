@@ -3,7 +3,11 @@ from alembic import op
 from main_app import db
 from main_app.models import DatasetManager
 from main_app.datasetManager.forms import uploadDatasetForm
-from main_app.datasetManager.datasetManager import uploadDataset, drop_table
+from main_app.datasetManager.datasetManager import (
+    uploadDataset,
+    drop_table,
+    getRowsAndColumns,
+)
 from main_app.main.utilityfunctions import printLogEntry, printFormErrors, save_File
 
 datasetManager_bp = Blueprint("datasetManager_bp", __name__)
@@ -14,6 +18,9 @@ def display_datasetManager():
     uploadDatasetFormDetails = uploadDatasetForm()
 
     datasets = DatasetManager.query.all()
+    datasetDetails = []
+    for dataset in datasets:
+        datasetDetails.append(getRowsAndColumns(dataset.id))
 
     if "submitUploadDataset" in request.form:
         if uploadDatasetFormDetails.validate_on_submit():
@@ -35,6 +42,7 @@ def display_datasetManager():
         title="Dataset Manager",
         uploadDatasetForm=uploadDatasetFormDetails,
         datasets=datasets,
+        datasetDetails=datasetDetails,
     )
 
 
