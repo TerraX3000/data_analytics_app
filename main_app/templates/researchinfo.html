@@ -23,8 +23,6 @@
     </div>
 </div>
 
-{{ macro_display_flashed_messages() }}
-
 <div class="w3-container w3-center">
 </div>
 
@@ -34,6 +32,8 @@
     <button id='button_AddResourcesTab' class="w3-bar-item w3-button tablink"
         onclick="openTab(event, 'AddResourcesTab','DataAnalytics')">Add Resources</button>
 </div>
+
+{{ macro_display_flashed_messages() }}
 
 <div class="infoTab" id="ViewResourcesTab" style="display:block">
     <div class="w3-container">
