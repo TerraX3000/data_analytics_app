@@ -27,15 +27,15 @@
 </div>
 
 <div class="w3-bar w3-blue">
-    <button id='button_ViewResourcesTab' class="w3-bar-item w3-button tablink"
-        onclick="openTab(event, 'ViewResourcesTab', 'DataAnalytics')">View Resources</button>
+    <button id='button_DefaultTab' class="w3-bar-item w3-button tablink"
+        onclick="openTab(event, 'DefaultTab', 'ResourceInfo')">View Resources</button>
     <button id='button_AddResourcesTab' class="w3-bar-item w3-button tablink"
-        onclick="openTab(event, 'AddResourcesTab','DataAnalytics')">Add Resources</button>
+        onclick="openTab(event, 'AddResourcesTab','ResourceInfo')">Add Resources</button>
 </div>
 
 {{ macro_display_flashed_messages() }}
 
-<div class="infoTab" id="ViewResourcesTab" style="display:block">
+<div class="infoTab" id="DefaultTab" style="display:block">
     <div class="w3-container">
         <h5> Purpose</h5>
         <p> Research Info provides the capability to capture online resources and references related to the purpose of
@@ -129,12 +129,12 @@
 <!-- Reload page to last loaded tab -->
 <script type='text/javascript'>
     document.addEventListener("DOMContentLoaded", function (event) {
-        selected_tab = 'DataAnalytics_selected_tab';
+        selected_tab = 'ResourceInfo_selected_tab';
         var selectedTab = sessionStorage.getItem(selected_tab);
         if (selectedTab) {
             document.getElementById("button_" + selectedTab).click();
         } else {
-            document.getElementById("button_ViewResourcesTab").click();
+            document.getElementById("button_DefaultTab").click();
         }
     });
 </script>
