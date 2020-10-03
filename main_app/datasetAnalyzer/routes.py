@@ -5,13 +5,20 @@ from bokeh.resources import CDN
 from bokeh.embed import json_item
 from bokeh.layouts import gridplot, layout, Spacer
 
+import pandas as pd
+
 from main_app import db
 from main_app.models import DatasetManager
 from main_app.datasetAnalyzer.forms import (
     selectDatasetToAnalyzeForm,
     selectColumnToAnalyzeForm,
 )
-from main_app.datasetAnalyzer.datasetAnalyzer import analyzeDataset, plotColumn
+from main_app.datasetAnalyzer.datasetAnalyzer import (
+    dataframeHtmlTableComponents,
+    analyzeDataset,
+    plotColumn,
+    categoricalPlot,
+)
 from main_app.main.referenceData import getDatasetNames
 from main_app.main.utilityfunctions import printLogEntry, printFormErrors, save_File
 
@@ -23,16 +30,29 @@ def display_datasetAnalyzer():
     selectDatasetToAnalzerFormDetails = selectDatasetToAnalyzeForm()
     selectDatasetToAnalzerFormDetails.datasetName.choices = getDatasetNames()
     selectColumnToAnalyzeFormDetails = selectColumnToAnalyzeForm()
-
+    datasetDetails = {}
+    df = pd.DataFrame()
+    dfHtmlTableComponents = dataframeHtmlTableComponents(df)
+    df_preview_HtmlTableComponents = dataframeHtmlTableComponents(df)
     datasets = DatasetManager.query.all()
 
     if "submitDatasetToAnalyze" in request.form:
         if selectDatasetToAnalzerFormDetails.validate_on_submit():
             printLogEntry("Dataset to Analyze Form Submitted")
-            datasetName = selectDatasetToAnalzerFormDetails.datasetName.data
-            columnNames = analyzeDataset(datasetName)
-            # print(columnNames)
-            selectColumnToAnalyzeFormDetails.columnName.choices = columnNames
+            dataset_id = selectDatasetToAnalzerFormDetails.datasetName.data
+            datasetDetails = {}
+            datasetDetails = analyzeDataset(dataset_id, datasetDetails)
+            # print(datasetDetails)
+            # print(datasetDetails["describeDataset"])
+            df = datasetDetails["describeDataset"].round(1)
+            dfHtmlTableComponents = dataframeHtmlTableComponents(df)
+            if datasetDetails["columnChoices"]:
+                selectColumnToAnalyzeFormDetails.columnName.choices = datasetDetails[
+                    "columnChoices"
+                ]
+                flash("Dataset Summary Statistics Completed", "success")
+            else:
+                flash("No columns found in dataset. Check dataset for errors.", "error")
         printFormErrors(selectDatasetToAnalzerFormDetails)
 
     if "submitColumnToAnalyze" in request.form:
@@ -49,6 +69,8 @@ def display_datasetAnalyzer():
         selectDatasetToAnalyzeForm=selectDatasetToAnalzerFormDetails,
         selectColumnToAnalyzeForm=selectColumnToAnalyzeFormDetails,
         resources=CDN.render(),
+        datasetDetails=datasetDetails,
+        dfHtmlTableComponents=dfHtmlTableComponents,
     )
 
 
@@ -63,13 +85,13 @@ def plotDatasetColumn():
 
 @datasetAnalyzer_bp.route("/dataplot/<int:dataset_id>&<columnName>")
 def showDataPlot(dataset_id, columnName):
-    # Create plots
-    # columnName = "Age"
+    # Create plot based on dataset and column name
     p = plotColumn(dataset_id, columnName)
-    # Define column and row spacers
-    # Spacer: margin - property type: Tuple ( Int , Int , Int , Int )
-    # Allows to create additional space around the component.
-    # The values in the tuple are ordered as follows - Margin-Top, Margin-Right, Margin-Bottom and Margin-Left
+    return json.dumps(json_item(p))
 
-    # Create a grid layout of plots
+
+@datasetAnalyzer_bp.route("/categoricalplot")
+def showCatergoricalPlot():
+    # Create plot
+    p = categoricalPlot()
     return json.dumps(json_item(p))

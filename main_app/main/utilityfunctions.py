@@ -34,5 +34,5 @@ def createDropDownChoices(choiceslist):
     for choice in choiceslist:
         DropDownList.append((choice, choice))
     DropDownChoices = tuple(DropDownList)
-    print(DropDownChoices)
+    # print(DropDownChoices)
     return DropDownChoices

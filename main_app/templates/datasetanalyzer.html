@@ -19,95 +19,237 @@
 </div>
 {% endmacro %}
 
+{% macro macro_displayDataframeTable(dfHtmlTableComponents) %}
+<div class='w3-container w3-small' style="overflow-x:auto;">
+    <table class='w3-table-all'>
+        <tr>
+            <th> </th>
+            {% for col in dfHtmlTableComponents.column_names %}
+            <th>{{col}}</th>
+            {% endfor %}
+        </tr>
+        {% for index_, row in zip(dfHtmlTableComponents.index, dfHtmlTableComponents.row_data) %}
+        <tr>
+            <td> {{ index_ }} </td>
+            {% for row_ in row %}
+            <td>{{row_}}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+
+    </table>
+</div>
+{% endmacro %}
+
 <div class="w3-container w3-amber w3-row">
     <div class="w3-third">
         <h2>{{title}}</h2>
     </div>
 </div>
 
+<div class="w3-bar w3-blue">
+    <button id='button_DefaultTab' class="w3-bar-item w3-button tablink"
+        onclick="openTab(event, 'DefaultTab', 'DataAnalytics')">Dataset Stats</button>
+    <button id='button_SimplePlotTab' class="w3-bar-item w3-button tablink"
+        onclick="openTab(event, 'SimplePlotTab', 'DataAnalytics')">Simple Plot</button>
+    <button id='button_CategoricalPlotTab' class="w3-bar-item w3-button tablink"
+        onclick="openTab(event, 'CategoricalPlotTab','DataAnalytics')">Categorical Plot</button>
+</div>
+
 {{ macro_display_flashed_messages() }}
 
-<div class="w3-container w3-center">
-</div>
-<div class="w3-container w3-cell-row">
-    <div class="w3-cell">
-        <h5> Purpose</h5>
-        <p> This data analyzer will generate data visualizations of user-selected columns from uploaded datasets.
-        </p>
-        <h5> Current Features</h5>
-        <p> The dataset analyzer will create a simple line plot. The x-axis displays the index value of the dataset. The
-            y-axis displays the user-selected column value. </p>
-        <h5> Limitations</h5>
-        <p> The plotted column must include numerical data. Non-numerical data will result in an error or a blank plot.
-        </p>
+<div class="w3-container infoTab" id='DefaultTab' style="display:block">
+
+    <div class="w3-container w3-cell-row">
+        <div class="w3-cell">
+            <h5> Purpose</h5>
+            <p> This data analyzer will generate data visualizations of user-selected columns from uploaded datasets.
+            </p>
+        </div>
+        <div class="w3-cell">
+            <h5> Sample Datasets</h5>
+            <h6> Titantic Dataset</h6>
+            <p class="w3-small"> The Titanic dataset contains information on the Titanic passengers.</p>
+            <h6> State Level Math Proficiency Dataset</h6>
+            <p class="w3-small"> The State Level Math Proficiency dataset containes education data from the Department
+                of Education.
+            </p>
+            <h6> Math Functions</h6>
+            <p class="w3-small"> The Math Functions dataset containes simple math functions.
+            </p>
+        </div>
     </div>
-    <div class="w3-cell">
-        <h5> Example 1</h5>
-        <p> The Titanic dataset contains information on the Titanic passengers. Several columns in this dataset contain
-            numerial values which are suitable for plotting:</p>
-        <ul>
-            <li> Index</li>
-            <li> PassengerId</li>
-            <li> Survived</li>
-            <li> Pclass</li>
-            <li> Age</li>
-            <li> SibSp</li>
-            <li> Parch</li>
-            <li> Fare</li>
-        </ul>
+
+    <div class="w3-container">
+        <form class="w3-container w3-padding-large" method="POST"
+            action="{{ url_for('datasetAnalyzer_bp.display_datasetAnalyzer') }}" enctype="multipart/form-data">
+            {{ selectDatasetToAnalyzeForm.csrf_token(id = False) }}
+            <fieldset class="w3-container w3-padding-large w3-hover-border-green">
+                <legend class="w3-xlarge">Choose Dataset to Analyze</legend>
+                <div class="w3-row-padding">
+                    {{ macro_display_formfield(selectDatasetToAnalyzeForm.datasetName, "w3-half") }}
+                </div>
+                <div class="w3-row w3-padding-large">
+                    {{ selectDatasetToAnalyzeForm.submitDatasetToAnalyze(class="w3-btn w3-blue w3-large") }}
+                </div>
+            </fieldset>
+        </form>
     </div>
-    <div class="w3-cell">
-        <h5> Example 2</h5>
-        <p> The State Level Math Proficiency dataset containes education data from the Department of Education. Several
-            columns in this dataset contain
-            numerial values which are suitable for plotting:</p>
-        <ul>
-            <li> Index</li>
-            <li> Data Group ID</li>
-            <li> Value</li>
-            <li> Number of Valid Test Takers</li>
-        </ul>
-        <p> Note: Data visualization may take longer since this dataset contains over 50,000 records. </p>
+    {% if selectColumnToAnalyzeForm.columnName.choices %}
+    <div class="w3-container">
+        <div class="w3-panel">
+            <h4> Dataset Info </h4>
+        </div>
+        <div class="w3-row-padding">
+            <div class="w3-half">
+                <p class="w3-small"> {{ datasetDetails["datasetInfo"][1] }}</p>
+                <p class="w3-small"> {{ datasetDetails["datasetInfo"][2] }} </p>
+                <p class="w3-small"> {{ datasetDetails["datasetInfo"][-2] }} </p>
+                <p class="w3-small"> {{ datasetDetails["datasetInfo"][-1] }} </p>
+                <table class="w3-table-all w3-small">
+                    <thead>
+                        <tr>
+                            {% for data in datasetDetails["datasetInfo"][3] %}
+                            <th> {{data }} </th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for line in datasetDetails["datasetInfo"][5:-2] %}
+                        <!-- <p class="w3-container" style="white-space: pre-wrap">{{ line }}</p> -->
+                        <tr>
+                            {% for data in line %}
+                            <td> {{data }} </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
+    <div class="w3-container">
+        <div class="w3-panel">
+            <h4> Dataset Statistics for Numerical Columns </h4>
+        </div>
+        {{ macro_displayDataframeTable(dfHtmlTableComponents) }}
+    </div>
+    <div class="w3-container">
+        <div class="w3-panel">
+            <h4> Dataset Preview (First and Last 10 Rows) </h4>
+        </div>
+        {{ macro_displayDataframeTable(datasetDetails["datasetPreview"]) }}
+    </div>
+
+    {% endif %}
+
 </div>
 
-<div class="w3-container">
-    <form class="w3-container w3-padding-large" method="POST"
-        action="{{ url_for('datasetAnalyzer_bp.display_datasetAnalyzer') }}" enctype="multipart/form-data">
-        {{ selectDatasetToAnalyzeForm.csrf_token(id = False) }}
-        <fieldset class="w3-container w3-padding-large w3-hover-border-green">
-            <legend class="w3-xlarge">Choose Dataset to Analyze</legend>
-            <div class="w3-row-padding">
-                {{ macro_display_formfield(selectDatasetToAnalyzeForm.datasetName, "w3-half") }}
-            </div>
-            <div class="w3-row w3-padding-large">
-                {{ selectDatasetToAnalyzeForm.submitDatasetToAnalyze(class="w3-btn w3-blue w3-large") }}
-            </div>
-        </fieldset>
-    </form>
-</div>
-{% if selectColumnToAnalyzeForm.columnName.choices %}
-<div class="w3-container">
-    <form class="w3-container w3-padding-large" method="POST"
-        action="{{ url_for('datasetAnalyzer_bp.display_datasetAnalyzer') }}" enctype="multipart/form-data">
-        {{ selectColumnToAnalyzeForm.csrf_token(id = False) }}
-        <fieldset class="w3-container w3-padding-large w3-hover-border-green">
-            <legend class="w3-xlarge">Choose Column to Analyze</legend>
-            <div class="w3-row-padding">
+<div class="w3-container infoTab" id='SimplePlotTab' style="display:none">
+    <div class="w3-container w3-cell-row">
+        <div class="w3-cell">
+            <h5> Description</h5>
+            <p> The dataset analyzer will create a simple line plot. The x-axis displays the index value of the
+                dataset.
+                The
+                y-axis displays the user-selected column value. </p>
+            <h5> Instructions </h5>
+            <ul>
+                <li> Select the dataset on the dataset stats tab</li>
+                <li> Choose a column from the Column Name menu below</li>
+                <li> Press Analyze Column to generate plot </li>
+            </ul>
+            <h5> Limitations</h5>
+            <p> The plotted column must include numerical data. Non-numerical data will result in an error or a
+                blank
+                plot.
+            </p>
+        </div>
+        <div class="w3-cell">
+            <h5> Example 1</h5>
+            <p> The Titanic dataset contains information on the Titanic passengers. Several columns in this dataset
+                contain
+                numerial values which are suitable for plotting:</p>
+            <ul>
+                <li> Index</li>
+                <li> PassengerId</li>
+                <li> Survived</li>
+                <li> Pclass</li>
+                <li> Age</li>
+                <li> SibSp</li>
+                <li> Parch</li>
+                <li> Fare</li>
+            </ul>
+        </div>
+        <div class="w3-cell">
+            <h5> Example 2</h5>
+            <p> The State Level Math Proficiency dataset containes education data from the Department of Education.
+                Several
+                columns in this dataset contain
+                numerial values which are suitable for plotting:</p>
+            <ul>
+                <li> Index</li>
+                <li> Data Group ID</li>
+                <li> Value</li>
+                <li> Number of Valid Test Takers</li>
+            </ul>
+            <p> Note: Data visualization may take longer since this dataset contains over 50,000 records. </p>
+        </div>
+    </div>
+
+    {% if selectColumnToAnalyzeForm.columnName.choices %}
+    <div class="w3-container">
+        <form class="w3-container w3-padding-large" method="POST"
+            action="{{ url_for('datasetAnalyzer_bp.display_datasetAnalyzer') }}" enctype="multipart/form-data">
+            {{ selectColumnToAnalyzeForm.csrf_token(id = False) }}
+            <fieldset class="w3-container w3-padding-large w3-hover-border-green">
+                <legend class="w3-xlarge">Choose Column to Analyze</legend <div class="w3-row-padding">
                 {{ macro_display_formfield(selectColumnToAnalyzeForm.columnName, "w3-half") }}
-            </div>
-            <div class="w3-row w3-padding-large">
-                {{ selectColumnToAnalyzeForm.submitColumnToAnalyze(class="w3-btn w3-blue w3-large") }}
-            </div>
-        </fieldset>
-    </form>
-</div>
-{% endif %}
+    </div>
 
-<div class="w3-panel"></div>
-<div class="w3-row-padding">
-    <div class="w3-col l4 w3-padding-16" id="dataplot"></div>
+    <div class="w3-row w3-padding-large">
+        {{ selectColumnToAnalyzeForm.submitColumnToAnalyze(class="w3-btn w3-blue w3-large") }}
+    </div>
+    </fieldset>
+    </form>
+    <div class="w3-panel"></div>
+    {% endif %}
+    <div class="w3-row-padding">
+        <div class="w3-col l4 w3-padding-16" id="dataplot"></div>
+    </div>
 </div>
+
+
+
+
+<div class="w3-container infoTab" id='CategoricalPlotTab' style="display:none">
+
+    <div class="w3-row-padding">
+        <div class="w3-col l4 w3-padding-16" id="categoricalplot"></div>
+    </div>
+</div>
+<script>
+    (async () => {
+        const response = await fetch('/categoricalplot');
+        const item = await response.json();
+        Bokeh.embed.embed_item(item, "categoricalplot");
+    })();
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename="js/pageTabs.js") }}"></script>
+<!-- Reload page to last loaded tab -->
+<script type='text/javascript'>
+    document.addEventListener("DOMContentLoaded", function (event) {
+        selected_tab = 'DataAnalytics_selected_tab';
+        var selectedTab = sessionStorage.getItem(selected_tab);
+        if (selectedTab) {
+            document.getElementById("button_" + selectedTab).click();
+        } else {
+            document.getElementById("button_DefaultTab").click();
+        }
+    });
+</script>
+
 <script>
 
     document.addEventListener("DOMContentLoaded", async function (event) {
