@@ -2,7 +2,7 @@ import pandas as pd
 
 from bokeh.plotting import figure, output_file, show
 
-from pandas_profiling import ProfileReport
+# from pandas_profiling import ProfileReport
 
 import io
 import re
