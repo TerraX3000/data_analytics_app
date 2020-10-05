@@ -33,13 +33,13 @@ def analyzeDataset(dataset_id, datasetDetails):
     # print(df.shape)
     # print(df.columns)
     datasetDetails["columnChoices"] = createDropDownChoices(df.columns)
-    datasetDetails["describeDataset"] = df.describe()
+    datasetDetails["describeDataset"] = df.describe(include="all")
 
     datasetDetails["datasetInfo"] = getDatasetInfo(df)
     datasetDetails["datasetInfo_2"] = datasetDetails["datasetInfo"]
 
     datasetDetails["datasetPreview"] = dataframeHtmlTableComponents(
-        pd.concat([df.head(10), df.tail(10)])
+        pd.concat([df.head(10).round(3), df.tail(10).round(3)])
     )
     # print("saving report")
     # profile = ProfileReport(df, title="Pandas Profiling Report", minimal=True)
