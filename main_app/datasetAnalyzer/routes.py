@@ -90,8 +90,8 @@ def showDataPlot(dataset_id, columnName):
     return json.dumps(json_item(p))
 
 
-@datasetAnalyzer_bp.route("/categoricalplot")
-def showCatergoricalPlot():
+@datasetAnalyzer_bp.route("/categoricalplot/<int:dataset_id>&<columnName>")
+def showCatergoricalPlot(dataset_id, columnName):
     # Create plot
-    p = categoricalPlot()
+    p = categoricalPlot(dataset_id, columnName)
     return json.dumps(json_item(p))
