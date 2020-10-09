@@ -19,3 +19,11 @@ class ResearchInfo(db.Model):
     description = db.Column(db.Text, nullable=True)
     tags = db.Column(db.String(500))
     createDateTime = db.Column(db.DateTime, nullable=True, default=datetime.utcnow)
+
+
+class WebContent(db.Model):
+    __tablename__ = "WebContent"
+    id = db.Column(db.Integer, primary_key=True)
+    webpageName = db.Column(db.String(255), nullable=False)
+    blockName = db.Column(db.String(255))
+    webContent = db.Column(db.Text, nullable=True)
