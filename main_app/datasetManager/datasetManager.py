@@ -1,4 +1,5 @@
 import pandas as pd
+from flask import flash
 
 from sqlalchemy import MetaData
 from sqlalchemy.ext.declarative import declarative_base
@@ -19,9 +20,10 @@ def uploadDataset(datasetName, csvFile, comment):
         db.session.add(newDataset)
         db.session.commit()
         df.to_sql(datasetSqlName, db.engine)
+        flash("Dataset has been uploaded!", "success")
     except:
         print("Error uploading dataset")
-
+        flash("Error uploading dataset", "error")
     return
 
 
