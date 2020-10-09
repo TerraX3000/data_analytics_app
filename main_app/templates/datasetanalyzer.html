@@ -97,15 +97,7 @@
         </div>
         <div class="w3-cell">
             <h5> Sample Datasets</h5>
-            <h6> Titantic Dataset</h6>
-            <p class="w3-small"> The Titanic dataset contains information on the Titanic passengers.</p>
-            <h6> State Level Math Proficiency Dataset</h6>
-            <p class="w3-small"> The State Level Math Proficiency dataset contains education data from the Department
-                of Education.
-            </p>
-            <h6> Math Functions</h6>
-            <p class="w3-small"> The Math Functions dataset contains simple math functions.
-            </p>
+            {{ webContent['datasetanalyzer.html']['Sample Dataset Description']|safe}}
         </div>
     </div>
 
@@ -231,11 +223,11 @@
         </div>
         <div class="w3-cell w3-padding">
             <h5> Example 1</h5>
-            {{ webContent['datasetanalyzer.html']['Example 1']|safe}}
+            {{ webContent['datasetanalyzer.html']['Example 1 Description']|safe}}
         </div>
         <div class="w3-cell w3-padding">
             <h5> Example 2</h5>
-            {{ webContent['datasetanalyzer.html']['Example 2']|safe}}
+            {{ webContent['datasetanalyzer.html']['Example 2 Description']|safe}}
         </div>
     </div>
 
