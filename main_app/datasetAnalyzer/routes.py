@@ -19,7 +19,7 @@ from main_app.datasetAnalyzer.datasetAnalyzer import (
     plotColumn,
     categoricalPlot,
 )
-from main_app.main.referenceData import getDatasetNames
+from main_app.main.referenceData import getDatasetNames, getWebContent
 from main_app.main.utilityfunctions import printLogEntry, printFormErrors, save_File
 
 datasetAnalyzer_bp = Blueprint("datasetAnalyzer_bp", __name__)
@@ -35,6 +35,7 @@ def display_datasetAnalyzer():
     dfHtmlTableComponents = dataframeHtmlTableComponents(df)
     df_preview_HtmlTableComponents = dataframeHtmlTableComponents(df)
     datasets = DatasetManager.query.all()
+    webContent = getWebContent()
 
     if "submitDatasetToAnalyze" in request.form:
         if selectDatasetToAnalzerFormDetails.validate_on_submit():
@@ -71,6 +72,7 @@ def display_datasetAnalyzer():
         resources=CDN.render(),
         datasetDetails=datasetDetails,
         dfHtmlTableComponents=dfHtmlTableComponents,
+        webContent=webContent,
     )
 
 
