@@ -107,39 +107,22 @@ def plotColumn(dataset_id, columnName):
 
 
 def categoricalPlot(dataset_id, columnName):
-    # datasetSqlName = "dataset_Titanic_Dataset"
-    # columnName = "Sex"
     log = DatasetManager.query.get_or_404(dataset_id)
     datasetName = log.datasetName
     datasetSqlName = log.datasetSqlName
     df = pd.read_sql_table(datasetSqlName, db.engine)
     vc = df[columnName].value_counts()
-    # categories = df[columnName].unique()
-    # print(type(categories))
-    # series = df.groupby(columnName)["index"].nunique()
-    # df = series.to_frame()
-    # print(df.shape)
-    # df = df[columnName].to_frame()
-    # print(type(df))
-    # df = df[columnName].groupby([columnName]).agg(["count"])
-    # print(df)
-    # categories = dfcategories.
-    # counts = dfcategories.
-    # # Here is a list of categorical values (or factors)
     categories = vc.index.to_list()
-    fruits = ["Apples", "Pears", "Nectarines", "Plums", "Grapes", "Strawberries"]
-
     # Set the x_range to the list of categories above
-    # p = figure(x_range=fruits, plot_height=250, title="Fruit Counts")
     p = figure(
         x_range=categories,
         plot_height=250,
+        plot_width=1100,
         title=datasetName + ": " + columnName + " Counts",
     )
 
     # Categorical values can also be used as coordinates
     values = vc.to_list()
-    # p.vbar(x=fruits, top=[5, 3, 4, 2, 4, 6], width=0.9)
     p.vbar(x=categories, top=values, width=0.9)
 
     # Set some properties to make the plot look better

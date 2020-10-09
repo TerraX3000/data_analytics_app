@@ -19,6 +19,27 @@
 </div>
 {% endmacro %}
 
+{% macro macro_display_radioButtons(formfield, w3ResponsiveGridClass) %}
+<div class="{{w3ResponsiveGridClass}}">
+    {{ formfield.label(class="w3-text-green w3-large") }}
+    {% if formfield.errors %}
+    {{ formfield(class="w3-radio is-invalid") }}
+    <div class="invalid-feedback">
+        {% for error in formfield.errors %}
+        <span>{{ error }}</span>
+        {% endfor %}
+    </div>
+    {% else %}
+    {% for choice in formfield %}
+    <div class="w3-row-padding">
+        {{ choice(class="w3-radio") }}
+        {{ choice.label(class="w3-text-black w3-medium") }}
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
+{% endmacro %}
+
 {% macro macro_displayDataframeTable(dfHtmlTableComponents) %}
 <div class='w3-container w3-small' style="overflow-x:auto;">
     <table class='w3-table-all'>
@@ -49,11 +70,10 @@
 
 <div class="w3-bar w3-blue">
     <button id='button_DefaultTab' class="w3-bar-item w3-button tablink"
-        onclick="openTab(event, 'DefaultTab', 'DataAnalytics')">Dataset Stats</button>
+        onclick="openTab(event, 'DefaultTab', 'DataAnalytics')">Dataset Statistics</button>
     <button id='button_SimplePlotTab' class="w3-bar-item w3-button tablink"
-        onclick="openTab(event, 'SimplePlotTab', 'DataAnalytics')">Simple Plot</button>
-    <button id='button_CategoricalPlotTab' class="w3-bar-item w3-button tablink"
-        onclick="openTab(event, 'CategoricalPlotTab','DataAnalytics')">Categorical Plot</button>
+        onclick="openTab(event, 'SimplePlotTab', 'DataAnalytics')">Dataset Visualization</button>
+
 </div>
 
 {{ macro_display_flashed_messages() }}
@@ -63,8 +83,17 @@
     <div class="w3-container w3-cell-row">
         <div class="w3-cell">
             <h5> Purpose</h5>
-            <p> This data analyzer will generate data visualizations of user-selected columns from uploaded datasets.
+            <p> This data analyzer will generate data statistics and visualizations of user-selected columns from
+                uploaded datasets.
             </p>
+            <h5> Instructions </h5>
+            <ul>
+                <li> Upload a dataset using the Dataset Manager or use an example dataset</li>
+                <li> Select the dataset to analyze below</li>
+                <li> Press Analyze Dataset to generate dataset statistics </li>
+                <li> Review statistics below to understand the dataset</li>
+                <li> Switch to the Dataset Visualization tab to generate data plots</li>
+            </ul>
         </div>
         <div class="w3-cell">
             <h5> Sample Datasets</h5>
@@ -100,39 +129,76 @@
         <div class="w3-panel">
             <h4> Dataset Info </h4>
         </div>
-        <div class="w3-row-padding">
-            <div class="w3-half">
-                <p class="w3-small"> {{ datasetDetails["datasetInfo"][1] }}</p>
-                <p class="w3-small"> {{ datasetDetails["datasetInfo"][2] }} </p>
-                <p class="w3-small"> {{ datasetDetails["datasetInfo"][-2] }} </p>
-                <p class="w3-small"> {{ datasetDetails["datasetInfo"][-1] }} </p>
-                <table class="w3-table-all w3-small">
-                    <thead>
-                        <tr>
-                            {% for data in datasetDetails["datasetInfo"][3] %}
-                            <th> {{data }} </th>
+        <div class="w3-row w3-panel">
+            <div class='w3-col l6'>
+                <div class="w3-row-padding">
+                    <p class="w3-small"> {{ datasetDetails["datasetInfo"][1] }}</p>
+                    <p class="w3-small"> {{ datasetDetails["datasetInfo"][2] }} </p>
+                    <p class="w3-small"> {{ datasetDetails["datasetInfo"][-2] }} </p>
+                    <p class="w3-small"> {{ datasetDetails["datasetInfo"][-1] }} </p>
+                    <table class="w3-table-all w3-small">
+                        <thead>
+                            <tr>
+                                {% for data in datasetDetails["datasetInfo"][3] %}
+                                <th> {{data }} </th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for line in datasetDetails["datasetInfo"][5:-2] %}
+                            <!-- <p class="w3-container" style="white-space: pre-wrap">{{ line }}</p> -->
+                            <tr>
+                                {% for data in line %}
+                                <td> {{data }} </td>
+                                {% endfor %}
+                            </tr>
                             {% endfor %}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for line in datasetDetails["datasetInfo"][5:-2] %}
-                        <!-- <p class="w3-container" style="white-space: pre-wrap">{{ line }}</p> -->
-                        <tr>
-                            {% for data in line %}
-                            <td> {{data }} </td>
-                            {% endfor %}
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+            <div class='w3-col l6'>
+                <p> Dataset Info provides a description of the datatypes in the dataset.</p>
+                <ul>
+                    <li> # - Integer-based index number of the column in the dataset </li>
+                    <li> Column - the column name of the dataset field</li>
+                    <li> Non-Null Count - the number of non-empty values in the column</li>
+                    <li> Data Type:</li>
+                    <ul>
+                        <li> int64 - Integer number type</li>
+                        <li> float64 - decimal number type</li>
+                        <li> object - a string or other non-number type</li>
+                    </ul>
+                </ul>
             </div>
         </div>
     </div>
     <div class="w3-container">
         <div class="w3-panel">
             <h4> Dataset Statistics </h4>
+            <p> Dataset Statistics characterizes the values of the columns in the dataset.</p>
+            <ul>
+                <li> count: Count number of non-NA/null observations.</li>
+            </ul>
+            <p> Textual data</p>
+            <ul>
+                <li> unique: Number of unique values</li>
+                <li> top: Most common value</li>
+                <li> frequency: Most common value’s frequency</li>
+            </ul>
+            <p> Numerical data</p>
+            <ul>
+                <li> mean: Mean of the values.</li>
+                <li> std: Standard deviation of the observations.</li>
+                <li> min: Minimum of the values in the object. </li>
+                <li> 25%/50%/75%: Percentile values.</li>
+                <li> max: Maximum of the values in the object. </li>
+            </ul>
         </div>
         {{ macro_displayDataframeTable(dfHtmlTableComponents) }}
+        <p class="w3-padding w3-small"> nan = the value is not a number or not applicable for the measurand</p>
     </div>
     <div class="w3-container">
         <div class="w3-panel">
@@ -147,25 +213,23 @@
 
 <div class="w3-container infoTab" id='SimplePlotTab' style="display:none">
     <div class="w3-container w3-cell-row">
-        <div class="w3-cell">
+        <div class="w3-cell w3-padding">
             <h5> Description</h5>
-            <p> The dataset analyzer will create a simple line plot. The x-axis displays the index value of the
-                dataset.
-                The
-                y-axis displays the user-selected column value. </p>
+            <p> The dataset analyzer will create a simple plot of the selected data column. </p>
             <h5> Instructions </h5>
             <ul>
-                <li> Select the dataset on the dataset stats tab</li>
+                <li> Select the dataset on the dataset statistics tab</li>
                 <li> Choose a column from the Column Name menu below</li>
-                <li> Press Analyze Column to generate plot </li>
+                <li> Choose a plot type appropriate for the data type</li>
+                <li> Press Visualize Data Column to generate a plot </li>
             </ul>
             <h5> Limitations</h5>
-            <p> The plotted column must include numerical data. Non-numerical data will result in an error or a
-                blank
-                plot.
-            </p>
+            <ul>
+                <li> Line graphs require numerical data</li>
+                <li> Bar charts require string (object) data</li>
+            </ul>
         </div>
-        <div class="w3-cell">
+        <div class="w3-cell w3-padding">
             <h5> Example 1</h5>
             <p> The Titanic dataset contains information on the Titanic passengers. Several columns in this dataset
                 contain
@@ -181,7 +245,7 @@
                 <li> Fare</li>
             </ul>
         </div>
-        <div class="w3-cell">
+        <div class="w3-cell w3-padding">
             <h5> Example 2</h5>
             <p> The State Level Math Proficiency dataset containes education data from the Department of Education.
                 Several
@@ -203,108 +267,138 @@
             action="{{ url_for('datasetAnalyzer_bp.display_datasetAnalyzer') }}" enctype="multipart/form-data">
             {{ selectColumnToAnalyzeForm.csrf_token(id = False) }}
             <fieldset class="w3-container w3-padding-large w3-hover-border-green">
-                <legend class="w3-xlarge">Choose Column to Analyze</legend <div class="w3-row-padding">
-                {{ macro_display_formfield(selectColumnToAnalyzeForm.columnName, "w3-half") }}
+                <legend class="w3-xlarge">Choose Column to Analyze</legend>
+                <div class="w3-row-padding">
+                    {{ macro_display_formfield(selectColumnToAnalyzeForm.columnName, "w3-half") }}
+                    {{ macro_display_radioButtons(selectColumnToAnalyzeForm.plotType, "w3-threequarter") }}
+                </div>
+
+                <div class="w3-row w3-padding-large">
+                    {{ selectColumnToAnalyzeForm.submitColumnToAnalyze(class="w3-btn w3-blue w3-large") }}
+                </div>
+            </fieldset>
+        </form>
+        <div class="w3-panel"></div>
+        {% endif %}
+        <div class="w3-row-padding">
+            <div class="w3-col l4 w3-padding-16" id="dataplot"></div>
+        </div>
+        <div class="w3-row-padding">
+            <div class="w3-col l12 w3-padding-16" id="categoricalplot"></div>
+        </div>
     </div>
 
-    <div class="w3-row w3-padding-large">
-        {{ selectColumnToAnalyzeForm.submitColumnToAnalyze(class="w3-btn w3-blue w3-large") }}
+
+
+
+    <div class="w3-container infoTab" id='CategoricalPlotTab' style="display:none">
+
+
     </div>
-    </fieldset>
-    </form>
-    <div class="w3-panel"></div>
-    {% endif %}
-    <div class="w3-row-padding">
-        <div class="w3-col l4 w3-padding-16" id="dataplot"></div>
-    </div>
-</div>
 
 
-
-
-<div class="w3-container infoTab" id='CategoricalPlotTab' style="display:none">
-
-    <div class="w3-row-padding">
-        <div class="w3-col l12 w3-padding-16" id="categoricalplot"></div>
-    </div>
-</div>
-
-
-<script type="text/javascript" src="{{ url_for('static', filename="js/pageTabs.js") }}"></script>
-<!-- Reload page to last loaded tab -->
-<script type='text/javascript'>
-    document.addEventListener("DOMContentLoaded", function (event) {
-        selected_tab = 'DataAnalytics_selected_tab';
-        var selectedTab = sessionStorage.getItem(selected_tab);
-        if (selectedTab) {
-            document.getElementById("button_" + selectedTab).click();
-        } else {
-            document.getElementById("button_DefaultTab").click();
-        }
-    });
-</script>
-
-<script type="text/javascript" src="{{ url_for('static', filename="js/dataPlotting.js") }}"></script>
-<script>
-    plotEndpoint = "/categoricalplot/";
-    tag_id = "categoricalplot";
-    document.addEventListener("DOMContentLoaded", function () { createPlot(plotEndpoint, tag_id); });
-</script>
-<script>
-    plotEndpoint2 = "/dataplot/";
-    tag_id2 = "dataplot";
-    document.addEventListener("DOMContentLoaded", function () { createPlot(plotEndpoint2, tag_id2); });
-</script>
-
-<script type='text/javascript'>
-    // Create event listener to save dataset details in session variable on form submit
-    var submitDataset = document.querySelector("input[id=submitDatasetToAnalyze]");
-    var submitColumn = document.querySelector("input[id=submitColumnToAnalyze]");
-    if (submitDataset) {
-        submitDataset.addEventListener("click", function () { saveDataAnalyzerSettings(event); });
-    }
-    if (submitColumn) {
-        submitColumn.addEventListener("click", function () { saveDataAnalyzerSettings(event); });
-    }
-    function saveDataAnalyzerSettings(evt) {
-
-        selectFields = document.querySelectorAll("select");
-
-        // Initialize the JSON object to hold the properties and values
-        var object = {};
-        // Cycle through the selectfields
-        for (i = 0; i < selectFields.length; i++) {
-            // Ignore any select fields by replacing 'ignore' with id
-            if (selectFields[i].name == "datasetName" || selectFields[i].name == "columnName") {
-                // console.log('selectfield = ' + selectFields[i].id)
-                // Get the selectField id and value
-                input_name = selectFields[i].name;
-                input_type = selectFields[i].type;
-                input_value = selectFields[i].value;
-                input_disabled = selectFields[i].disabled;
-                input_className = selectFields[i].className;
-                input_label = selectFields[i].labels[0];
-                if (input_label) {
-                    // console.log('label = ' + input_label.textContent);
-                    input_label_className = input_label.className;
-                } else {
-                    input_label_className = "";
-                }
-                // console.log(inputFields[i].type + " " + input_name + ' = ' + input_value);
-                // Store the select field id and value in the JSON object
-                // object[input_name] = input_value;
-                object[input_name] = { type: input_type, value: input_value, disabled: input_disabled, className: input_className, label_className: input_label_className };
+    <script type="text/javascript" src="{{ url_for('static', filename="js/pageTabs.js") }}"></script>
+    <!-- Reload page to last loaded tab -->
+    <script type='text/javascript'>
+        document.addEventListener("DOMContentLoaded", function (event) {
+            selected_tab = 'DataAnalytics_selected_tab';
+            var selectedTab = sessionStorage.getItem(selected_tab);
+            if (selectedTab) {
+                document.getElementById("button_" + selectedTab).click();
+            } else {
+                document.getElementById("button_DefaultTab").click();
             }
+        });
+    </script>
+
+    <script type="text/javascript" src="{{ url_for('static', filename="js/dataPlotting.js") }}"></script>
+    <script>
+        plotEndpoint = "/categoricalplot/";
+        tag_id = "categoricalplot";
+        plotType = 'Bar Chart';
+        document.addEventListener("DOMContentLoaded", function () { createPlot(plotEndpoint, tag_id, plotType); });
+    </script>
+    <script>
+        plotEndpoint2 = "/dataplot/";
+        tag_id2 = "dataplot";
+        plotType2 = 'Line Graph';
+        document.addEventListener("DOMContentLoaded", function () { createPlot(plotEndpoint2, tag_id2, plotType2); });
+    </script>
+
+    <script type='text/javascript'>
+        // Create event listener to save dataset details in session variable on form submit
+        var submitDataset = document.querySelector("input[id=submitDatasetToAnalyze]");
+        var submitColumn = document.querySelector("input[id=submitColumnToAnalyze]");
+        if (submitDataset) {
+            submitDataset.addEventListener("click", function () { saveDataAnalyzerSettings(event); });
+        }
+        if (submitColumn) {
+            submitColumn.addEventListener("click", function () { saveDataAnalyzerSettings(event); });
+        }
+        function saveDataAnalyzerSettings(evt) {
+
+            selectFields = document.querySelectorAll("select");
+            radioFields = document.querySelectorAll("input[type=radio]:checked");
+
+            // Initialize the JSON object to hold the properties and values
+            var object = {};
+            // Cycle through the selectfields
+            for (i = 0; i < selectFields.length; i++) {
+                // Ignore any select fields by replacing 'ignore' with id
+                if (selectFields[i].name == "datasetName" || selectFields[i].name == "columnName") {
+                    // console.log('selectfield = ' + selectFields[i].id)
+                    // Get the selectField id and value
+                    input_name = selectFields[i].name;
+                    input_type = selectFields[i].type;
+                    input_value = selectFields[i].value;
+                    input_disabled = selectFields[i].disabled;
+                    input_className = selectFields[i].className;
+                    input_label = selectFields[i].labels[0];
+                    if (input_label) {
+                        // console.log('label = ' + input_label.textContent);
+                        input_label_className = input_label.className;
+                    } else {
+                        input_label_className = "";
+                    }
+                    // console.log(inputFields[i].type + " " + input_name + ' = ' + input_value);
+                    // Store the select field id and value in the JSON object
+                    // object[input_name] = input_value;
+                    object[input_name] = { type: input_type, value: input_value, disabled: input_disabled, className: input_className, label_className: input_label_className };
+                }
+            }
+            console.log('Number radiofields = ' + radioFields.length);
+            for (i = 0; i < radioFields.length; i++) {
+                // Ignore any select fields by replacing 'ignore' with id
+                if (radioFields[i].name == "plotType") {
+                    // console.log('selectfield = ' + selectFields[i].id)
+                    // Get the selectField id and value
+                    input_name = radioFields[i].name;
+                    input_type = radioFields[i].type;
+                    input_value = radioFields[i].value;
+                    input_disabled = radioFields[i].disabled;
+                    input_className = radioFields[i].className;
+                    input_label = radioFields[i].labels[0];
+                    if (input_label) {
+                        // console.log('label = ' + input_label.textContent);
+                        input_label_className = input_label.className;
+                    } else {
+                        input_label_className = "";
+                    }
+                    // console.log(inputFields[i].type + " " + input_name + ' = ' + input_value);
+                    // Store the select field id and value in the JSON object
+                    // object[input_name] = input_value;
+                    object[input_name] = { type: input_type, value: input_value, disabled: input_disabled, className: input_className, label_className: input_label_className };
+                }
+            }
+
+            // Convert the JSON object to a string
+            myJSON = JSON.stringify(object);
+            console.log('myJSON =' + myJSON);
+            // Save the JSON object to the session variable
+            sessionStorage.setItem("SavedDataAnalyzerSettings", myJSON);
         }
 
-        // Convert the JSON object to a string
-        myJSON = JSON.stringify(object);
-        console.log('myJSON =' + myJSON);
-        // Save the JSON object to the session variable
-        sessionStorage.setItem("SavedDataAnalyzerSettings", myJSON);
-    }
-
-</script>
+    </script>
 
 
-{% endblock content %}
+    {% endblock content %}
