@@ -1,6 +1,9 @@
 import pandas as pd
 
 from bokeh.plotting import figure, output_file, show
+from bokeh.transform import factor_cmap
+from bokeh.palettes import Spectral6
+from bokeh.models import ColumnDataSource
 
 # from pandas_profiling import ProfileReport
 
@@ -123,10 +126,23 @@ def categoricalPlot(dataset_id, columnName):
 
     # Categorical values can also be used as coordinates
     values = vc.to_list()
-    p.vbar(x=categories, top=values, width=0.9)
+
+    source = ColumnDataSource(data=dict(categories=categories, values=values))
+    p.vbar(
+        x="categories",
+        top="values",
+        width=0.9,
+        source=source,
+        legend_field="categories",
+        line_color="white",
+        fill_color=factor_cmap("categories", palette=Spectral6, factors=categories),
+    )
 
     # Set some properties to make the plot look better
     p.xgrid.grid_line_color = None
     p.y_range.start = 0
+    # p.y_range.end = 9
+    p.legend.orientation = "horizontal"
+    p.legend.location = "top_center"
 
     return p
