@@ -53,23 +53,29 @@
         {% for researchInfo in researchInfoLogs %}
         <div class="w3-section w3-bottombar">
             <div class="w3-row-padding">
-                <h3 class="w3-threequarter"> {{researchInfo.title}} </h3>
-                <div class="w3-right">
-                    <form action="{{ url_for('researchInfo_bp.update_Resource', researchInfo_id=researchInfo.id) }}"
-                        method="POST">
-                        <button type="submit"><i class="fa fa-pencil fa-fw"></i>Edit</button>
+                <div class="w3-panel w3-blue-grey w3-round-large">
+                    <h3 class="w3-threequarter "> {{researchInfo.title}} </h3>
 
-                        <button type="button"
-                            onclick="document.getElementById('deleteModal{{researchInfo.id}}').style.display='block'"><i
-                                class="fa fa-trash fa-fw"></i>Delete</button>
-                    </form>
+                    <div class="w3-right w3-padding-large w3-blue-grey">
+                        <form action="{{ url_for('researchInfo_bp.update_Resource', researchInfo_id=researchInfo.id) }}"
+                            method="POST">
+                            <button type="submit" class="w3-button w3-blue-grey"><i
+                                    class="fa fa-pencil fa-fw"></i>Edit</button>
+
+                            <button type="button" class="w3-button w3-blue-grey"
+                                onclick="document.getElementById('deleteModal{{researchInfo.id}}').style.display='block'"><i
+                                    class="fa fa-trash fa-fw"></i>Delete</button>
+                        </form>
+                    </div>
                 </div>
+                <div class="w3-panel w3-white w3-round-large">
+                    <a class="w3-col l12 w3-padding-small w3-small w3-text-grey" target="_blank"
+                        href="{{researchInfo.weblink}}">{{researchInfo.weblink}}<i
+                            class="w3-padding-small fa fa-external-link" aria-hidden="true"></i></a>
 
-                <a class="w3-col l12 w3-padding-small w3-small w3-text-grey" target="_blank"
-                    href="{{researchInfo.weblink}}">{{researchInfo.weblink}}<i
-                        class="w3-padding-small fa fa-external-link" aria-hidden="true"></i></a>
-                <i style="white-space: pre-wrap"
-                    class="w3-col l12 w3-padding-small w3-medium">{{researchInfo.description}} </i>
+                    <i style="white-space: pre-wrap"
+                        class="w3-col l12 w3-padding-small w3-medium">{{researchInfo.description}} </i>
+                </div>
             </div>
         </div>
 
