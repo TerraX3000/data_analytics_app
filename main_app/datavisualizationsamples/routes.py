@@ -20,6 +20,9 @@ from main_app.datavisualizationsamples.datavizsamples import (
     stackedAreaPlot,
     colorMappedImagePlot,
     dateTimePlot,
+    interactiveLegend,
+    sliderPowerPlot,
+    transferSelection,
 )
 
 import json
@@ -62,6 +65,9 @@ def showGridPlot():
     p18 = stackedAreaPlot()
     p19 = colorMappedImagePlot()
     p20 = dateTimePlot()
+    p21 = interactiveLegend()
+    p22 = sliderPowerPlot()
+    p23 = transferSelection()
 
     # Define column and row spacers
     # Spacer: margin - property type: Tuple ( Int , Int , Int , Int )
@@ -88,6 +94,9 @@ def showGridPlot():
             [rowsp],
             [p19, sp1, p20],
             [rowsp],
+            [p21, sp1, p22],
+            [rowsp],
+            [p23],
         ]
     )
     return json.dumps(json_item(plotLayout))

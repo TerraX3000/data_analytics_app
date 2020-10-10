@@ -2,10 +2,11 @@ from flask import current_app
 import os
 
 from bokeh.plotting import figure, output_file, show
-from bokeh.layouts import column
-from bokeh.models import Slider, ColumnDataSource
+from bokeh.layouts import column, row
+from bokeh.models import Slider, ColumnDataSource, CustomJS
 from bokeh.util.hex import axial_to_cartesian, hexbin
 from bokeh.transform import linear_cmap
+from bokeh.palettes import Spectral4
 import bokeh.sampledata
 
 # bokeh.sampledata.download()
@@ -15,6 +16,7 @@ from bokeh.sampledata.iris import flowers
 import numpy as np
 from math import pi
 import pandas as pd
+from random import random
 
 
 def irisPlot(x, y):
@@ -393,3 +395,115 @@ def dateTimePlot():
     df["Date"] = pd.to_datetime(df["Date"])
     p.line(df["Date"], df["Close"], color="navy", alpha=0.5)
     return p
+
+
+def interactiveLegend():
+    p = figure(plot_width=800, plot_height=400, x_axis_type="datetime")
+    p.title.text = "Click on legend entries to mute the corresponding lines"
+    file_path = os.path.join(
+        current_app.root_path, "static/bokeh_sample_data", "AAPL.csv"
+    )
+    aapl = pd.read_csv(file_path)
+    file_path = os.path.join(
+        current_app.root_path, "static/bokeh_sample_data", "IBM.csv"
+    )
+    ibm = pd.read_csv(file_path)
+    file_path = os.path.join(
+        current_app.root_path, "static/bokeh_sample_data", "MSFT.csv"
+    )
+    msft = pd.read_csv(file_path)
+    file_path = os.path.join(
+        current_app.root_path, "static/bokeh_sample_data", "GOOG.csv"
+    )
+    goog = pd.read_csv(file_path)
+
+    for data, name, color in zip(
+        [aapl, ibm, msft, goog], ["AAPL", "IBM", "MSFT", "GOOG"], Spectral4
+    ):
+        df = pd.DataFrame(data)
+        df["Date"] = pd.to_datetime(df["Date"])
+        p.line(
+            df["Date"],
+            df["Close"],
+            line_width=2,
+            color=color,
+            alpha=0.8,
+            muted_color=color,
+            muted_alpha=0.2,
+            legend_label=name,
+        )
+
+    p.legend.location = "top_left"
+    p.legend.click_policy = "mute"
+
+    return p
+
+
+def sliderPowerPlot():
+    x = [x * 0.005 for x in range(0, 200)]
+    y = x
+
+    source = ColumnDataSource(data=dict(x=x, y=y))
+
+    p = figure(plot_width=400, plot_height=370)
+    p.line("x", "y", source=source, line_width=3, line_alpha=0.6)
+
+    callback = CustomJS(
+        args=dict(source=source),
+        code="""
+        var data = source.data;
+        var f = cb_obj.value
+        var x = data['x']
+        var y = data['y']
+        for (var i = 0; i < x.length; i++) {
+            y[i] = Math.pow(x[i], f)
+        }
+        source.change.emit();
+    """,
+    )
+    slider = Slider(start=0.1, end=4, value=1, step=0.1, title="power")
+    slider.js_on_change("value", callback)
+    layout = column(slider, p)
+    return layout
+
+
+def transferSelection():
+    x = [random() for x in range(500)]
+    y = [random() for y in range(500)]
+
+    s1 = ColumnDataSource(data=dict(x=x, y=y))
+    p1 = figure(
+        plot_width=400, plot_height=400, tools="lasso_select", title="Select Here"
+    )
+    p1.circle("x", "y", source=s1, alpha=0.6)
+
+    s2 = ColumnDataSource(data=dict(x=[], y=[]))
+    p2 = figure(
+        plot_width=400,
+        plot_height=400,
+        x_range=(0, 1),
+        y_range=(0, 1),
+        tools="",
+        title="Watch Here",
+    )
+    p2.circle("x", "y", source=s2, alpha=0.6)
+    s1.selected.js_on_change(
+        "indices",
+        CustomJS(
+            args=dict(s1=s1, s2=s2),
+            code="""
+            var inds = cb_obj.indices;
+            var d1 = s1.data;
+            var d2 = s2.data;
+            d2['x'] = []
+            d2['y'] = []
+            for (var i = 0; i < inds.length; i++) {
+                d2['x'].push(d1['x'][inds[i]])
+                d2['y'].push(d1['y'][inds[i]])
+            }
+            s2.change.emit();
+        """,
+        ),
+    )
+    layout = row(p1, p2)
+    return layout
