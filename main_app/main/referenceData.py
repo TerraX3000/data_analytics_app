@@ -21,22 +21,3 @@ def getDatasetSqlName(datasetName):
         .all()
     )
     return datasetSqlName
-
-
-def getWebContent():
-    webContentDB = WebContent.query.all()
-    webContent = {}
-    for content in webContentDB:
-        if content.webpageName in webContent:
-            # print("webpageName found: ", content.webpageName)
-            if content.blockName in webContent[content.webpageName]:
-                # print("blockname found: ", content.blockName)
-                webContent[content.webpageName][content.blockName] = content.webContent
-            else:
-                # print("new blockname: ", content.blockName)
-                webContent[content.webpageName][content.blockName] = content.webContent
-        else:
-            # print("new webpageName: ", content.webpageName)
-            webContent[content.webpageName] = {content.blockName: content.webContent}
-    # print("webContent: ", webContent)
-    return webContent
