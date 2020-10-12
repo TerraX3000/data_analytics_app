@@ -18,6 +18,7 @@ from main_app.datasetAnalyzer.datasetAnalyzer import (
     analyzeDataset,
     plotColumn,
     categoricalPlot,
+    multilinePlot,
 )
 from main_app.main.referenceData import getDatasetNames
 from main_app.main.utilityfunctions import printLogEntry, printFormErrors, save_File
@@ -94,4 +95,11 @@ def showDataPlot(dataset_id, columnName):
 def showCatergoricalPlot(dataset_id, columnName):
     # Create plot
     p = categoricalPlot(dataset_id, columnName)
+    return json.dumps(json_item(p))
+
+
+@datasetAnalyzer_bp.route("/multilineplot/<int:dataset_id>&<columnName>")
+def showMultilinePlot(dataset_id, columnName):
+    # Create plot
+    p = multilinePlot(dataset_id, columnName)
     return json.dumps(json_item(p))

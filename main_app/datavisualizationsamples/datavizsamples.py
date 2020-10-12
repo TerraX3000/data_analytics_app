@@ -452,11 +452,11 @@ def sliderPowerPlot():
         args=dict(source=source),
         code="""
         var data = source.data;
-        var f = cb_obj.value
-        var x = data['x']
+        var f = cb_obj.value;
+        var x = data['x'];
         var y = data['y']
         for (var i = 0; i < x.length; i++) {
-            y[i] = Math.pow(x[i], f)
+            y[i] = Math.pow(x[i], f);
         }
         source.change.emit();
     """,

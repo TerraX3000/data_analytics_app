@@ -256,6 +256,9 @@
         <div class="w3-row-padding">
             <div class="w3-col l12 w3-padding-16" id="categoricalplot"></div>
         </div>
+        <div class="w3-row-padding">
+            <div class="w3-col l12 w3-padding-16" id="multilineplot"></div>
+        </div>
     </div>
 
 
@@ -292,7 +295,13 @@
         plotEndpoint2 = "/dataplot/";
         tag_id2 = "dataplot";
         plotType2 = 'Line Graph';
-        document.addEventListener("DOMContentLoaded", function () { createPlot(plotEndpoint2, tag_id2, plotType2); });
+        // document.addEventListener("DOMContentLoaded", function () { createPlot(plotEndpoint2, tag_id2, plotType2); });
+    </script>
+    <script>
+        plotEndpoint3 = "/multilineplot/";
+        tag_id3 = "multilineplot";
+        plotType3 = 'Line Graph';
+        document.addEventListener("DOMContentLoaded", function () { createPlot(plotEndpoint3, tag_id3, plotType3); });
     </script>
 
     <script type='text/javascript'>
