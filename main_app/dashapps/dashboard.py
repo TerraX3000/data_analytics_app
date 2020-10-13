@@ -27,12 +27,14 @@ def register_dashapp(app, title, base_pathname, layout, register_callbacks_fun):
             "/static/dash.css",
             "https://fonts.googleapis.com/css?family=Lato",
             "https://www.w3schools.com/w3css/4/w3.css",
+            "https://www.w3schools.com/lib/w3-colors-metro.css",
+            "https://www.w3schools.com/lib/w3-colors-flat.css",
             "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css",
         ],
     )
     # Push an application context so we can use Flask's 'current_app'
     with app.app_context():
-        my_dashapp.index_string = html_layout
+        my_dashapp.index_string = html_layout()
         my_dashapp.title = title
         my_dashapp.layout = layout
         print("app context")

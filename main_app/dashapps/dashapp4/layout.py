@@ -78,15 +78,24 @@ layout = html.Div(
             style={"display": "inline-block", "width": "49%"},
         ),
         html.Div(
-            dcc.Slider(
-                id="crossfilter-year--slider",
-                min=df["Year"].min(),
-                max=df["Year"].max(),
-                value=df["Year"].max(),
-                marks={str(year): str(year) for year in df["Year"].unique()},
-                step=None,
-            ),
-            style={"width": "49%", "padding": "0px 20px 20px 20px"},
+            [
+                html.Div(
+                    dcc.Slider(
+                        id="crossfilter-year--slider",
+                        min=df["Year"].min(),
+                        max=df["Year"].max(),
+                        value=df["Year"].max(),
+                        marks={str(year): str(year) for year in df["Year"].unique()},
+                        step=None,
+                    ),
+                    style={
+                        "width": "49%",
+                        "padding": "0px 20px 20px 20px",
+                        "backgroundColor": "rgb(250, 250, 250)",
+                    },
+                ),
+            ],
+            style={"display": "inline", "width": "100%"},
         ),
     ]
 )

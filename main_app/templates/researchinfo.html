@@ -3,7 +3,7 @@
 
 {% macro macro_display_formfield(formfield, w3ResponsiveGridClass) %}
 <div class="{{w3ResponsiveGridClass}}">
-    {{ formfield.label(class="w3-text-green w3-large") }}
+    {{ formfield.label(class="webContent['layout']['form-text-color'] w3-large") }}
     {% if formfield.errors %}
     {{ formfield(class="w3-select is-invalid") }}
     <div class="invalid-feedback">
@@ -17,16 +17,10 @@
 </div>
 {% endmacro %}
 
-<div class="w3-container w3-amber w3-row">
-    <div class="w3-third">
-        <h2>{{title}}</h2>
-    </div>
-</div>
-
 <div class="w3-container w3-center">
 </div>
 
-<div class="w3-bar w3-blue">
+<div class="w3-bar {{webContent['layout']['tab-bar-color']}}">
     <button id='button_DefaultTab' class="w3-bar-item w3-button tablink"
         onclick="openTab(event, 'DefaultTab', 'ResourceInfo')">View Resources</button>
     <button id='button_AddResourcesTab' class="w3-bar-item w3-button tablink"
@@ -53,22 +47,24 @@
         {% for researchInfo in researchInfoLogs %}
         <div class="w3-section w3-bottombar">
             <div class="w3-row-padding">
-                <div class="w3-panel w3-blue-grey w3-round-large">
+                <div class="w3-panel {{webContent['layout']['research-title-panel-color']}} w3-round-large">
                     <h3 class="w3-threequarter "> {{researchInfo.title}} </h3>
 
-                    <div class="w3-right w3-padding-large w3-blue-grey">
+                    <div class="w3-right w3-padding-large {{webContent['layout']['research-title-panel-color']}}">
                         <form action="{{ url_for('researchInfo_bp.update_Resource', researchInfo_id=researchInfo.id) }}"
                             method="POST">
-                            <button type="submit" class="w3-button w3-blue-grey"><i
+                            <button type="submit"
+                                class="w3-button {{webContent['layout']['research-title-panel-color']}}"><i
                                     class="fa fa-pencil fa-fw"></i>Edit</button>
 
-                            <button type="button" class="w3-button w3-blue-grey"
+                            <button type="button"
+                                class="w3-button {{webContent['layout']['research-title-panel-color']}}"
                                 onclick="document.getElementById('deleteModal{{researchInfo.id}}').style.display='block'"><i
                                     class="fa fa-trash fa-fw"></i>Delete</button>
                         </form>
                     </div>
                 </div>
-                <div class="w3-panel w3-white w3-round-large">
+                <div class="w3-panel {{webContent['layout']['research-description-panel-color']}} w3-round-large">
                     <a class="w3-col l12 w3-padding-small w3-small w3-text-grey" target="_blank"
                         href="{{researchInfo.weblink}}">{{researchInfo.weblink}}<i
                             class="w3-padding-small fa fa-external-link" aria-hidden="true"></i></a>
@@ -111,7 +107,7 @@
         <form class="w3-container w3-padding-large" method="POST"
             action="{{ url_for('researchInfo_bp.display_researchInfo') }}" enctype="multipart/form-data">
             {{ addResearchInfoForm.csrf_token(id = False) }}
-            <fieldset class="w3-container w3-padding-large w3-hover-border-green">
+            <fieldset class="w3-container w3-padding-large {{webContent['layout']['fieldset-hover-border-color']}}">
                 <legend class="w3-xlarge">Add New Research Resource</legend>
                 <div class="w3-row-padding">
                     {{ macro_display_formfield(addResearchInfoForm.title, "w3-threequarter") }}
@@ -123,7 +119,7 @@
                     {{ macro_display_formfield(addResearchInfoForm.description, "w3-threequarter") }}
                 </div>
                 <div class="w3-row w3-padding-large">
-                    {{ addResearchInfoForm.submitResearchInfo(class="w3-btn w3-blue w3-large") }}
+                    {{ addResearchInfoForm.submitResearchInfo(class="w3-metro-darken w3-btn w3-large") }}
                 </div>
             </fieldset>
         </form>

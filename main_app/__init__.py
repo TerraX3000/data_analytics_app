@@ -55,6 +55,32 @@ def datetimefilter(value, format="%a %b %-d @ %-I:%M %p"):
     return local_dt.strftime(format)
 
 
+def getWebContent(WebContent):
+    # This function creates a dictionary for webContent data stored in the database.
+    # WebContent is accessed by calling this dictionary structure:
+    # {{ webContent[pageName][blockName] }}
+    # WebContent contains data stored in the SQL database which can be
+    # used to store information to customize app content.
+    # WebContent is accessible by all templates by referencing
+    # the WebContent dictionary.
+    webContentDB = WebContent.query.all()
+    webContent = {}
+    for content in webContentDB:
+        if content.webpageName in webContent:
+            # print("webpageName found: ", content.webpageName)
+            if content.blockName in webContent[content.webpageName]:
+                # print("blockname found: ", content.blockName)
+                webContent[content.webpageName][content.blockName] = content.webContent
+            else:
+                # print("new blockname: ", content.blockName)
+                webContent[content.webpageName][content.blockName] = content.webContent
+        else:
+            # print("new webpageName: ", content.webpageName)
+            webContent[content.webpageName] = {content.blockName: content.webContent}
+    # print("webContent: ", webContent)
+    return webContent
+
+
 def create_app(config_class):
     app = Flask(__name__)
     app.config.from_object(config_class)
@@ -99,6 +125,14 @@ def create_app(config_class):
     app.register_blueprint(researchInfo_bp)
     app.register_blueprint(dashapps_bp)
 
+    # Add context processor to make webContent data stored in the database
+    # available to all templates by default
+    from main_app.models import WebContent
+
+    @app.context_processor
+    def setWebContentAppContext():
+        return dict(webContent=getWebContent(WebContent))
+
     # Import Dash application
     from main_app.dashapps.dashboard import register_dashapp
     from main_app.dashapps.dashapp1.layout import layout as layout1
@@ -131,41 +165,5 @@ def create_app(config_class):
     register_dashapp(
         app, "Manufacturing SPC Dashboard", "dashapp6", layout6, register_callbacks6
     )
-
-    # Add context processor to make webContent data stored in the database
-    # available to all templates by default
-    from main_app.models import WebContent
-
-    @app.context_processor
-    def getWebContent():
-        # This function creates a dictionary for webContent data stored in the database.
-        # WebContent is accessed by calling this dictionary structure:
-        # {{ webContent[pageName][blockName] }}
-        # WebContent contains data stored in the SQL database which can be
-        # used to store information to customize app content.
-        # WebContent is accessible by all templates by referencing
-        # the WebContent dictionary.
-        webContentDB = WebContent.query.all()
-        webContent = {}
-        for content in webContentDB:
-            if content.webpageName in webContent:
-                # print("webpageName found: ", content.webpageName)
-                if content.blockName in webContent[content.webpageName]:
-                    # print("blockname found: ", content.blockName)
-                    webContent[content.webpageName][
-                        content.blockName
-                    ] = content.webContent
-                else:
-                    # print("new blockname: ", content.blockName)
-                    webContent[content.webpageName][
-                        content.blockName
-                    ] = content.webContent
-            else:
-                # print("new webpageName: ", content.webpageName)
-                webContent[content.webpageName] = {
-                    content.blockName: content.webContent
-                }
-        # print("webContent: ", webContent)
-        return dict(webContent=webContent)
 
     return app

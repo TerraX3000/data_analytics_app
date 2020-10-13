@@ -22,21 +22,23 @@ def display_datasetManager():
     for dataset in datasets:
         datasetDetails.append(getRowsAndColumns(dataset.id))
 
-    if "submitUploadDataset" in request.form:
-        if uploadDatasetFormDetails.validate_on_submit():
-            printLogEntry("Upload Dataset Form Submitted")
-            if uploadDatasetFormDetails.csvDatasetFile.data:
-                uploadedDatasetFile = save_File(
-                    uploadDatasetFormDetails.csvDatasetFile.data,
-                    "Uploaded_Dataset_File.csv",
-                )
-                datasetName = uploadDatasetFormDetails.datasetName.data
-                comment = uploadDatasetFormDetails.comment.data
-                uploadDataset(datasetName, uploadedDatasetFile, comment)
+    try:
+        if "submitUploadDataset" in request.form:
+            if uploadDatasetFormDetails.validate_on_submit():
+                printLogEntry("Upload Dataset Form Submitted")
+                if uploadDatasetFormDetails.csvDatasetFile.data:
+                    uploadedDatasetFile = save_File(
+                        uploadDatasetFormDetails.csvDatasetFile.data,
+                        "Uploaded_Dataset_File.csv",
+                    )
+                    datasetName = uploadDatasetFormDetails.datasetName.data
+                    comment = uploadDatasetFormDetails.comment.data
+                    uploadDataset(datasetName, uploadedDatasetFile, comment)
 
-                return redirect(url_for("datasetManager_bp.display_datasetManager"))
-
-    printFormErrors(uploadDatasetFormDetails)
+                    return redirect(url_for("datasetManager_bp.display_datasetManager"))
+    except:
+        flash("Error uploading dataset", "error")
+        printFormErrors(uploadDatasetFormDetails)
 
     return render_template(
         "datasetmanager.html",

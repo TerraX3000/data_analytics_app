@@ -37,6 +37,7 @@ def display_researchInfo():
         title="Research Info",
         addResearchInfoForm=addResearchInfoFormDetails,
         researchInfoLogs=researchInfoLogs,
+        submit_button_color="w3-blue",
     )
 
 

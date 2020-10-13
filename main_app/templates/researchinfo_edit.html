@@ -3,7 +3,7 @@
 
 {% macro macro_display_formfield(formfield, w3ResponsiveGridClass) %}
 <div class="{{w3ResponsiveGridClass}}">
-    {{ formfield.label(class="w3-text-green w3-large") }}
+    {{ formfield.label(class="webContent['layout']['form-text-color'] w3-large") }}
     {% if formfield.errors %}
     {{ formfield(class="w3-select is-invalid") }}
     <div class="invalid-feedback">
@@ -17,12 +17,6 @@
 </div>
 {% endmacro %}
 
-<div class="w3-container w3-amber w3-row">
-    <div class="w3-third">
-        <h2>{{title}}</h2>
-    </div>
-</div>
-
 {{ macro_display_flashed_messages() }}
 
 <div class="w3-container w3-center">
@@ -35,7 +29,7 @@
         enctype="multipart/form-data">
 
         {{ updateResourceForm.csrf_token(id = False) }}
-        <fieldset class="w3-container w3-padding-large w3-hover-border-green">
+        <fieldset class="w3-container w3-padding-large {{webContent['layout']['fieldset-hover-border-color']}}">
 
             <div class="w3-row-padding">
                 {{ macro_display_formfield(updateResourceForm.title, "w3-threequarter") }}
@@ -49,7 +43,7 @@
             <div class="w3-row w3-padding-large">
                 <a class="w3-btn w3-border-blue w3-large"
                     href="{{ url_for('researchInfo_bp.display_researchInfo') }}">Cancel</a>
-                {{ updateResourceForm.submitUpdatedResource(class="w3-btn w3-blue w3-large") }}
+                {{ updateResourceForm.submitUpdatedResource(class="w3-btn w3-metro-darken w3-large") }}
             </div>
         </fieldset>
     </form>
