@@ -90,12 +90,40 @@ def create_app(config_class):
     from main_app.datasetManager.routes import datasetManager_bp
     from main_app.datasetAnalyzer.routes import datasetAnalyzer_bp
     from main_app.researchInfo.routes import researchInfo_bp
+    from main_app.dashapps.routes import dashapps_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(datavisualizationsamples_bp)
     app.register_blueprint(datasetManager_bp)
     app.register_blueprint(datasetAnalyzer_bp)
     app.register_blueprint(researchInfo_bp)
+    app.register_blueprint(dashapps_bp)
+
+    # Import Dash application
+    from main_app.dashapps.dashboard import register_dashapp
+    from main_app.dashapps.dashapp1.layout import layout as layout1
+
+    from main_app.dashapps.dashapp2.layout import layout as layout2
+    from main_app.dashapps.dashapp2.callbacks import (
+        register_callbacks as register_callbacks2,
+    )
+    from main_app.dashapps.dashapp3.layout import layout as layout3
+    from main_app.dashapps.dashapp4.layout import layout as layout4
+    from main_app.dashapps.dashapp4.callbacks import (
+        register_callbacks as register_callbacks4,
+    )
+    from main_app.dashapps.dashapp5.layout import layout as layout5
+    from main_app.dashapps.dashapp5.callbacks import (
+        register_callbacks as register_callbacks5,
+    )
+
+    register_dashapp(app, "Dashapp 1", "dashapp", layout1, False)
+    register_dashapp(app, "Dashapp 2", "dashapp2", layout2, register_callbacks2)
+    register_dashapp(app, "Population Chart", "dashapp3", layout3, False)
+    register_dashapp(app, "Cross Filter ", "dashapp4", layout4, register_callbacks4)
+    register_dashapp(
+        app, "Generic Cross Filter ", "dashapp5", layout5, register_callbacks5
+    )
 
     # Add context processor to make webContent data stored in the database
     # available to all templates by default

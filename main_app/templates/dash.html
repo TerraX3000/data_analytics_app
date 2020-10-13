@@ -1,0 +1,39 @@
+{% extends 'layout.html'%}
+{% block content %}
+<div class="w3-container w3-amber w3-row">
+    <div class="w3-third">
+        <h2>{{title}}</h2>
+    </div>
+</div>
+
+<div class="w3-panel"></div>
+<div class="w3-container">
+    <h5>Overview</h5>
+    <p>The plots shown on this page were created using Dash. According to the <a target="_blank"
+            href="https://bokeh.org/">Dash website</a>, Dash is a productive Python framework for building web
+        applications.
+
+    <p>Written on top of Flask, Plotly.js, and React.js, Dash is ideal for building data visualization apps with highly
+        custom user interfaces in pure Python. It's particularly suited for anyone who works with data in Python.</p>
+
+    <p>Through a couple of simple patterns, Dash abstracts away all of the technologies and protocols that are required
+        to build an interactive web-based application. Dash is simple enough that you can bind a user interface around
+        your Python code in an afternoon.</p>
+
+    <p>Dash apps are rendered in the web browser. You can deploy your apps to servers and then share them through URLs.
+        Since Dash apps are viewed in the web browser, Dash is inherently cross-platform and mobile ready.</p>
+    <p>The code to create these plots is written in Python and viewable on Github <a target="_blank"
+            href="https://github.com/TerraX3000/data_analytics_app/blob/master/main_app/datavisualizationsamples/datavizsamples.py">here.</a>
+        In addition, Dash is compatible with the <a target="_blank" href="https://pandas.pydata.org/">Pandas</a> data
+        analysis tool which is widely used by data scientists.
+    </p>
+</div>
+
+<div class="w3-container">
+    <a href="/dashapp/">
+        <span>Dash Example</span>
+        <i class="fa fa-arrow-right"></i>
+    </a>
+</div>
+
+{% endblock content %}
