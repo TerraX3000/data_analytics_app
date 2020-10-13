@@ -116,6 +116,10 @@ def create_app(config_class):
     from main_app.dashapps.dashapp5.callbacks import (
         register_callbacks as register_callbacks5,
     )
+    from main_app.dashapps.dashapp6.layout import layout as layout6
+    from main_app.dashapps.dashapp6.layout import (
+        register_callbacks as register_callbacks6,
+    )
 
     register_dashapp(app, "Dashapp 1", "dashapp", layout1, False)
     register_dashapp(app, "Dashapp 2", "dashapp2", layout2, register_callbacks2)
@@ -123,6 +127,9 @@ def create_app(config_class):
     register_dashapp(app, "Cross Filter ", "dashapp4", layout4, register_callbacks4)
     register_dashapp(
         app, "Generic Cross Filter ", "dashapp5", layout5, register_callbacks5
+    )
+    register_dashapp(
+        app, "Manufacturing SPC Dashboard", "dashapp6", layout6, register_callbacks6
     )
 
     # Add context processor to make webContent data stored in the database

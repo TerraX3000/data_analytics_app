@@ -1,4 +1,5 @@
 """Instantiate a Dash app."""
+import os
 import dash
 from .layout import html_layout
 
@@ -14,11 +15,14 @@ def register_dashapp(app, title, base_pathname, layout, register_callbacks_fun):
     # url_base_pathname=f"/{base_pathname}/",
     # routes_pathname_prefix="/{base_pathname}/",
     print("base_pathname = ", base_pathname)
+    # assets_folder=get_root_path(__name__) + f'/{base_pathname}/assets/'
+    # print("assets_folder=" + get_root_path(__name__) + f"/{base_pathname}/assets/")
     my_dashapp = dash.Dash(
         __name__,
         server=app,
         url_base_pathname=f"/{base_pathname}/",
         meta_tags=[meta_viewport],
+        assets_folder=os.path.join(app.root_path, "dashapps", base_pathname, "assets"),
         external_stylesheets=[
             "/static/dash.css",
             "https://fonts.googleapis.com/css?family=Lato",
