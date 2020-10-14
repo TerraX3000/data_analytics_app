@@ -22,6 +22,7 @@ layout = html.Div(
                                 {"label": i, "value": i} for i in available_indicators
                             ],
                             value="Electric power consumption (kWh per capita)",
+                            className="w3-text-black",
                         ),
                         dcc.RadioItems(
                             id="crossfilter-xaxis-type",
@@ -42,6 +43,7 @@ layout = html.Div(
                                 {"label": i, "value": i} for i in available_indicators
                             ],
                             value="GDP growth (annual %)",
+                            className="w3-text-black",
                         ),
                         dcc.RadioItems(
                             id="crossfilter-yaxis-type",
