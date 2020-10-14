@@ -42,15 +42,15 @@
 
 {% macro macro_displayDataframeTable(dfHtmlTableComponents) %}
 <div class='w3-container w3-small' style="overflow-x:auto;">
-    <table class='w3-table-all'>
+    <table class='w3-table w3-bordered'>
         <tr>
-            <th> </th>
+            <th class="{{webContent['layout']['table-header-row-color']}}"> </th>
             {% for col in dfHtmlTableComponents.column_names %}
-            <th>{{col}}</th>
+            <th class="{{webContent['layout']['table-header-row-color']}}">{{col}}</th>
             {% endfor %}
         </tr>
         {% for index_, row in zip(dfHtmlTableComponents.index, dfHtmlTableComponents.row_data) %}
-        <tr>
+        <tr class="{{webContent['layout']['table-row-color']}} {{webContent['layout']['table-row-hover-color']}}">
             <td> {{ index_ }} </td>
             {% for row_ in row %}
             <td>{{row_}}</td>
@@ -62,7 +62,7 @@
 </div>
 {% endmacro %}
 
-<div class="w3-bar {{webContent['layout']['tab-bar-color']}}">
+<div class=" w3-bar {{webContent['layout']['tab-bar-color']}}">
     <button id='button_DefaultTab' class="w3-bar-item w3-button tablink"
         onclick="openTab(event, 'DefaultTab', 'DataAnalytics')">Dataset Statistics</button>
     <button id='button_SimplePlotTab' class="w3-bar-item w3-button tablink"
@@ -122,18 +122,19 @@
                     <p class="w3-small"> {{ datasetDetails["datasetInfo"][2] }} </p>
                     <p class="w3-small"> {{ datasetDetails["datasetInfo"][-2] }} </p>
                     <p class="w3-small"> {{ datasetDetails["datasetInfo"][-1] }} </p>
-                    <table class="w3-table-all w3-small">
+                    <table class="w3-table w3-bordered w3-small">
                         <thead>
                             <tr>
                                 {% for data in datasetDetails["datasetInfo"][3] %}
-                                <th> {{data }} </th>
+                                <th class="{{webContent['layout']['table-header-row-color']}}"> {{data }} </th>
                                 {% endfor %}
                             </tr>
                         </thead>
                         <tbody>
                             {% for line in datasetDetails["datasetInfo"][5:-2] %}
                             <!-- <p class="w3-container" style="white-space: pre-wrap">{{ line }}</p> -->
-                            <tr>
+                            <tr
+                                class="{{webContent['layout']['table-row-color']}} {{webContent['layout']['table-row-hover-color']}}">
                                 {% for data in line %}
                                 <td> {{data }} </td>
                                 {% endfor %}
