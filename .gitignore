@@ -8,3 +8,4 @@ jupyternb_practice/
 testfiles/
 *.db
 datasets/
+*.DS_Store
