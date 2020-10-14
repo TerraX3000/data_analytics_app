@@ -21,7 +21,7 @@ layout = html.Div(
                             options=[
                                 {"label": i, "value": i} for i in available_indicators
                             ],
-                            value="Fertility rate, total (births per woman)",
+                            value="Electric power consumption (kWh per capita)",
                         ),
                         dcc.RadioItems(
                             id="crossfilter-xaxis-type",
@@ -41,7 +41,7 @@ layout = html.Div(
                             options=[
                                 {"label": i, "value": i} for i in available_indicators
                             ],
-                            value="Life expectancy at birth, total (years)",
+                            value="GDP growth (annual %)",
                         ),
                         dcc.RadioItems(
                             id="crossfilter-yaxis-type",

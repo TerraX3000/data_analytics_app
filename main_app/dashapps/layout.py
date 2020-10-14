@@ -23,8 +23,8 @@ def html_layout():
         <!-- Top container -->
             <div class="w3-bar w3-top """
         + webContent["layout"]["top-bar-color"]
-        + """ w3-blue w3-large" style="z-index:4">
-            <a href="/dashsamples" class="w3-large"><i class="w3-padding fa fa-chevron-left"></i> Return to Data Visualization Overview</a>
+        + """ w3-large" style="z-index:4">
+            <a href="/datavisualizationsamples" class="w3-large"><i class="w3-padding fa fa-chevron-left"></i> Return to Data Visualization Overview</a>
             <span class="w3-bar-item w3-right">Data Analytics</span>
             </div>
         

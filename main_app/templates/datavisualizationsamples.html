@@ -4,10 +4,37 @@
 <head> {{ resources|safe }} </head>
 
 <div class="w3-panel"></div>
+
 <div class="w3-container">
     <h5>Overview</h5>
-    <p>The plots shown on this page were created using Bokeh. According to the <a target="_blank"
-            href="https://bokeh.org/">Bokeh website</a>, Bokeh is an interactive visualization
+    <p>The data visualizations shown on this page were created using the data visualization software packages Dash and
+        Bokeh.</p>
+    <p>The code to create these plots is written in Python and viewable on Github <a target="_blank"
+            href="https://github.com/TerraX3000/data_analytics_app/tree/master/main_app/dashapps">here</a> and <a
+            target="_blank"
+            href="https://github.com/TerraX3000/data_analytics_app/blob/master/main_app/datavisualizationsamples/datavizsamples.py">here.</a>
+        In addition, Dash and Bokeh are compatible with the <a target="_blank"
+            href="https://pandas.pydata.org/">Pandas</a> data
+        analysis tool which is widely used by data scientists.
+    </p>
+    <h5>Dash</h5>
+    <p>According to the <a target="_blank" href="https://dash.plotly.com/introduction">Dash website</a>, Dash is a
+        productive Python framework for building web
+        applications.
+
+    <p>Written on top of Flask, Plotly.js, and React.js, Dash is ideal for building data visualization apps with highly
+        custom user interfaces in pure Python. It's particularly suited for anyone who works with data in Python.</p>
+
+    <p>Through a couple of simple patterns, Dash abstracts away all of the technologies and protocols that are required
+        to build an interactive web-based application. Dash is simple enough that you can bind a user interface around
+        your Python code in an afternoon.</p>
+
+    <p>Dash apps are rendered in the web browser. You can deploy your apps to servers and then share them through URLs.
+        Since Dash apps are viewed in the web browser, Dash is inherently cross-platform and mobile ready.</p>
+
+    <h5>Bokeh</h5>
+    <p>According to the <a target="_blank" href="https://bokeh.org/">Bokeh website</a>, Bokeh is an interactive
+        visualization
         library for modern web browsers. It provides elegant, concise construction of versatile graphics, and affords
         high-performance interactivity over large or streaming datasets. Bokeh can help anyone who would like to quickly
         and
@@ -19,10 +46,68 @@
             href="https://pandas.pydata.org/">Pandas</a> data analysis
         tool which is widely used by data scientists.
     </p>
+
+    <h3> Clicking on the examples below will direct you to an interactive Dash example </h3>
+</div>
+
+<div class="w3-panel"></div>
+
+<div class="w3-row-padding">
+    <div class="w3-threequarter">
+        <div class="w3-card-4">
+            <a href="/dashapp4/">
+                <div class="w3-container {{webContent['layout']['card-header-color']}} ">
+                    <h4>Cross Filter Example</h4>
+                </div>
+                <img src="{{ url_for('static', filename="img/screencapture-crossfilter.png") }}"
+                    alt="Cross Filter Example" style="width:100%">
+            </a>
+            <div class="w3-container {{webContent['layout']['card-footer-color']}} ">
+                <p>Cross filters allow you to explore relationships between different attributes. This example
+                    includes
+                    economic, health, and environmental data for countries over several decades. As you hover over a
+                    point in the scatter plot, the time series graphs will update to show data for that country. You
+                    can
+                    also select different attributes from the dropdown menus, change the x-axis to use a log or
+                    linear
+                    scale, and use the slider to select a different year.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="w3-panel"></div>
+
+<div class="w3-row-padding">
+    <div class="w3-threequarter">
+        <div class="w3-card-4">
+            <a href="/dashapp6/">
+                <div class="w3-container {{webContent['layout']['card-header-color']}} ">
+                    <h4>Real-Time Data Visualization</h4>
+                </div>
+                <img src="{{ url_for('static', filename="img/screencapture-spc-dashboard.png") }}"
+                    alt="Cross Filter Example" style="width:100%">
+            </a>
+            <div class="w3-container {{webContent['layout']['card-footer-color']}} ">
+                <p>Data visualizaton dashboards can be constructed to display disparate data in frameworks to improve
+                    understanding of complex processes. This dashboard simulates real-time monitoring to implement
+                    statistical process control over manufacturing processes.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="w3-panel"></div>
+
+<div class="w3-container">
+    <h3> The examples shown below were created with Bokeh </h3>
     <p> Many of the plots below include a toolbar with tools to pan, zoom, select, and download an image of the plot.
         Bokeh supports many interactive features including sliders and dropdowns to use as data filters on dashboard
         visualizations.</p>
 </div>
+
+<div class="w3-panel"></div>
+
 <div class="w3-row-padding">
     <div class="w3-col l4 w3-padding-16" id="gridplot"></div>
 </div>

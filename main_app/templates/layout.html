@@ -33,9 +33,10 @@
     {% if messages %}
     {% for category, message in messages %}
     {% if category=='success' %}
-    <div class="w3-panel w3-padding-16 w3-display-container {{webContent['layout']['flash-success-color']}}">
-        <span onclick="this.parentElement.style.display='none'" class="w3-button w3-display-topright">&times</span>
-        <b>{{ message }}</b>
+    <div class="w3-panel w3-padding-24 w3-display-container {{webContent['layout']['flash-success-color']}}">
+        <span onclick="this.parentElement.style.display='none'"
+            class="w3-button w3-display-left w3-margin-right w3-large">&times</span>
+        <b class="w3-display-middle w3-padding-large">{{ message }}</b>
     </div>
     {% elif category=='error' %}
     <div class="w3-panel w3-padding-16 w3-display-container {{webContent['layout']['flash-error-color']}} ">
@@ -79,8 +80,6 @@
                 title="close menu"><i class="fa fa-remove fa-fw"></i>  Close Menu</a>
             <a href="/" class="w3-bar-item w3-button w3-padding"><i class="fa fa-home fa-fw"></i> 
                 Home</a>
-            <a href="/dashsamples" class="w3-bar-item w3-button w3-padding"><i class="fa fa-area-chart fa-fw"></i> 
-                Data Visualization with Dash</a>
             <a href="/datavisualizationsamples" class="w3-bar-item w3-button w3-padding"><i
                     class="fa fa-area-chart fa-fw"></i> 
                 Data Visualization Samples</a>
