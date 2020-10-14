@@ -134,36 +134,81 @@ def create_app(config_class):
         return dict(webContent=getWebContent(WebContent))
 
     # Import Dash application
-    from main_app.dashapps.dashboard import register_dashapp
-    from main_app.dashapps.dashapp1.layout import layout as layout1
+    # Push an application context so we can use Flask's 'current_app'
+    # which is necessary to import db for initializing dataframes
+    with app.app_context():
+        from main_app.dashapps.dashboard import register_dashapp
+        from main_app.dashapps.dashapp1.layout import layout as layout1
 
-    from main_app.dashapps.dashapp2.layout import layout as layout2
-    from main_app.dashapps.dashapp2.callbacks import (
-        register_callbacks as register_callbacks2,
-    )
-    from main_app.dashapps.dashapp3.layout import layout as layout3
-    from main_app.dashapps.dashapp4.layout import layout as layout4
-    from main_app.dashapps.dashapp4.callbacks import (
-        register_callbacks as register_callbacks4,
-    )
-    from main_app.dashapps.dashapp5.layout import layout as layout5
-    from main_app.dashapps.dashapp5.callbacks import (
-        register_callbacks as register_callbacks5,
-    )
-    from main_app.dashapps.dashapp6.layout import layout as layout6
-    from main_app.dashapps.dashapp6.layout import (
-        register_callbacks as register_callbacks6,
-    )
+        from main_app.dashapps.dashapp2.layout import layout as layout2
+        from main_app.dashapps.dashapp2.callbacks import (
+            register_callbacks as register_callbacks2,
+        )
+        from main_app.dashapps.dashapp3.layout import layout as layout3
+        from main_app.dashapps.dashapp4.layout import layout as layout4
+        from main_app.dashapps.dashapp4.callbacks import (
+            register_callbacks as register_callbacks4,
+        )
+        from main_app.dashapps.dashapp5.layout import layout as layout5
+        from main_app.dashapps.dashapp5.callbacks import (
+            register_callbacks as register_callbacks5,
+        )
+        from main_app.dashapps.dashapp6.layout import layout as layout6
+        from main_app.dashapps.dashapp6.layout import (
+            register_callbacks as register_callbacks6,
+        )
+        from main_app.dashapps.dashapp7.layout import layout as layout7
+        from main_app.dashapps.dashapp7.layout import (
+            register_callbacks as register_callbacks7,
+        )
+        from main_app.dashapps.dashapp8.layout import layout as layout8
+        from main_app.dashapps.dashapp8.layout import (
+            register_callbacks as register_callbacks8,
+        )
 
-    register_dashapp(app, "Dashapp 1", "dashapp", layout1, False)
-    register_dashapp(app, "Dashapp 2", "dashapp2", layout2, register_callbacks2)
-    register_dashapp(app, "Population Chart", "dashapp3", layout3, False)
-    register_dashapp(app, "Cross Filter ", "dashapp4", layout4, register_callbacks4)
     register_dashapp(
-        app, "Generic Cross Filter ", "dashapp5", layout5, register_callbacks5
+        app, "Bar Chart Sample", "dashapp", "datavisualizationsamples", layout1, False
     )
     register_dashapp(
-        app, "Manufacturing SPC Dashboard", "dashapp6", layout6, register_callbacks6
+        app,
+        "Callback Example",
+        "dashapp2",
+        "datavisualizationsamples",
+        layout2,
+        register_callbacks2,
+    )
+    register_dashapp(
+        app, "Population Chart", "dashapp3", "datavisualizationsamples", layout3, False
+    )
+    register_dashapp(
+        app,
+        "Cross Filter ",
+        "dashapp4",
+        "datavisualizationsamples",
+        layout4,
+        register_callbacks4,
+    )
+    register_dashapp(
+        app,
+        "Generic Cross Filter ",
+        "dashapp5",
+        "datavisualizationsamples",
+        layout5,
+        register_callbacks5,
+    )
+    register_dashapp(
+        app,
+        "Manufacturing SPC Dashboard",
+        "dashapp6",
+        "datavisualizationsamples",
+        layout6,
+        register_callbacks6,
+    )
+    register_dashapp(
+        app, "Bar Chart", "dashapp7", "datasetanalyzer", layout7, register_callbacks7
+    )
+    register_dashapp(
+        app, "Scatter Plot", "dashapp8", "datasetanalyzer", layout8, register_callbacks8
     )
 
     return app

@@ -4,7 +4,9 @@ import dash
 from .layout import html_layout
 
 
-def register_dashapp(app, title, base_pathname, layout, register_callbacks_fun):
+def register_dashapp(
+    app, title, base_pathname, returnToPage, layout, register_callbacks_fun
+):
     # Meta tags for viewport responsiveness
     meta_viewport = {
         "name": "viewport",
@@ -34,7 +36,7 @@ def register_dashapp(app, title, base_pathname, layout, register_callbacks_fun):
     )
     # Push an application context so we can use Flask's 'current_app'
     with app.app_context():
-        my_dashapp.index_string = html_layout()
+        my_dashapp.index_string = html_layout(returnToPage)
         my_dashapp.title = title
         my_dashapp.layout = layout
         print("app context")

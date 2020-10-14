@@ -11,9 +11,11 @@
 <div class="w3-container w3-center">
     <h2>Data Analytics Demonstration App</h2>
 </div>
+{% if webContent['home']['Welcome Message'] %}
 <div class="w3-margin w3-panel w3-round-xlarge {{ webContent['layout']['info-panel-color'] }} ">
     {{ webContent['home']['Welcome Message']|safe }}
 </div>
+{% endif %}
 <div class="w3-container">
     <h3> Purpose</h3>
     <p> This application serves as an in-progress prototype to demonstrate data analytic and data visualization
@@ -58,7 +60,9 @@
         visual tool
         for database
         architects, developers, and DBAs.</p>
+    {% if webContent['home']['SQL Database Info'] %}
     {{ webContent['home']['SQL Database Info']|safe }}
+    {% endif %}
     <h5> Source Code</h5>
     <p> All source code is available on GitHub at <a target="_blank"
             href="https://github.com/TerraX3000/data_analytics_app">
