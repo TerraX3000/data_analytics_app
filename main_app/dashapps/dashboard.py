@@ -36,7 +36,7 @@ def register_dashapp(
     )
     # Push an application context so we can use Flask's 'current_app'
     with app.app_context():
-        my_dashapp.index_string = html_layout(returnToPage)
+        my_dashapp.index_string = html_layout(title, returnToPage)
         my_dashapp.title = title
         my_dashapp.layout = layout
         print("app context")

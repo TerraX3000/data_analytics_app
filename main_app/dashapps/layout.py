@@ -2,7 +2,7 @@ from main_app import getWebContent
 from main_app.models import WebContent
 
 
-def html_layout(returnToPage):
+def html_layout(title, returnToPage):
     return_href = "/" + returnToPage
     if returnToPage == "datavisualizationsamples":
         return_link_label = "Data Visualization Overview"
@@ -42,8 +42,10 @@ def html_layout(returnToPage):
                 <div class="w3-container """
         + webContent["layout"]["title-bar-color"]
         + """ w3-row">
-                    <div class="w3-third">
-                        <h2>Dash Plot</h2>
+                    <div class="w3-threequarter">
+                        <h2>"""
+        + title
+        + """</h2>
                     </div>
                 </div>
             </div>
