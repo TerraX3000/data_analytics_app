@@ -165,6 +165,10 @@ def create_app(config_class):
         from main_app.dashapps.dashapp8.layout import (
             register_callbacks as register_callbacks8,
         )
+        from main_app.dashapps.dashapp10.layout import layout as layout10
+        from main_app.dashapps.dashapp10.layout import (
+            register_callbacks as register_callbacks10,
+        )
 
     register_dashapp(
         app, "Bar Chart Sample", "dashapp", "datavisualizationsamples", layout1, False
@@ -182,7 +186,7 @@ def create_app(config_class):
     )
     register_dashapp(
         app,
-        "Cross Filter ",
+        "Cross Filtering",
         "dashapp4",
         "datavisualizationsamples",
         layout4,
@@ -190,7 +194,7 @@ def create_app(config_class):
     )
     register_dashapp(
         app,
-        "Generic Cross Filter ",
+        "Generic Cross Filtering",
         "dashapp5",
         "datavisualizationsamples",
         layout5,
@@ -198,7 +202,7 @@ def create_app(config_class):
     )
     register_dashapp(
         app,
-        "Manufacturing SPC Dashboard",
+        "Real-Time Data Visualization",
         "dashapp6",
         "datavisualizationsamples",
         layout6,
@@ -209,6 +213,14 @@ def create_app(config_class):
     )
     register_dashapp(
         app, "Scatter Plot", "dashapp8", "datasetanalyzer", layout8, register_callbacks8
+    )
+    register_dashapp(
+        app,
+        "Line Plot",
+        "dashapp10",
+        "datasetanalyzer",
+        layout10,
+        register_callbacks10,
     )
 
     return app
