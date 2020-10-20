@@ -206,67 +206,6 @@
 
 </div>
 
-<div class="w3-container infoTab" id='SimplePlotTab' style="display:none">
-    <div class="w3-container w3-cell-row">
-        <div class="w3-cell w3-padding">
-            <h5> Description</h5>
-            <p> The dataset analyzer will create a simple plot of the selected data column. </p>
-            <h5> Instructions </h5>
-            <ul>
-                <li> Select the dataset on the dataset statistics tab</li>
-                <li> Choose a column from the Column Name menu below</li>
-                <li> Choose a plot type appropriate for the data type</li>
-                <li> Press Visualize Data Column to generate a plot </li>
-            </ul>
-            <h5> Limitations</h5>
-            <ul>
-                <li> Scatter plots require numerical data</li>
-                <li> Bar charts require string (object) data</li>
-            </ul>
-        </div>
-        <div class="w3-cell w3-padding">
-            <h5> Example 1</h5>
-            {{ webContent['datasetanalyzer.html']['Example 1 Description']|safe}}
-        </div>
-        <div class="w3-cell w3-padding">
-            <h5> Example 2</h5>
-            {{ webContent['datasetanalyzer.html']['Example 2 Description']|safe}}
-        </div>
-    </div>
-
-    {% if selectColumnToAnalyzeForm.columnName.choices %}
-    <div class="w3-container">
-        <form class="w3-container w3-padding-large" method="POST"
-            action="{{ url_for('datasetAnalyzer_bp.display_datasetAnalyzer') }}" enctype="multipart/form-data">
-            {{ selectColumnToAnalyzeForm.csrf_token(id = False) }}
-            <fieldset class="w3-container w3-padding-large {{webContent['layout']['fieldset-hover-border-color']}}">
-                <legend class="w3-xlarge">Choose Column to Analyze</legend>
-                <div class="w3-row-padding">
-                    {{ macro_display_formfield(selectColumnToAnalyzeForm.columnName, "w3-half") }}
-                    {{ macro_display_radioButtons(selectColumnToAnalyzeForm.plotType, "w3-threequarter") }}
-                </div>
-
-                <div class="w3-row w3-padding-large">
-                    {{ selectColumnToAnalyzeForm.submitColumnToAnalyze(class="w3-btn w3-blue w3-large") }}
-                </div>
-            </fieldset>
-        </form>
-        <div class="w3-panel"></div>
-        {% endif %}
-        <div class="w3-row-padding">
-            <div class="w3-col l4 w3-padding-16" id="dataplot"></div>
-        </div>
-        <div class="w3-row-padding">
-            <div class="w3-col l12 w3-padding-16" id="categoricalplot"></div>
-        </div>
-        <div class="w3-row-padding">
-            <div class="w3-col l12 w3-padding-16" id="multilineplot"></div>
-        </div>
-    </div>
-</div>
-
-
-
 <div class="w3-container infoTab" id='DatasetVisualization' style="display:none">
     <div class="w3-container w3-row">
         <div class="w3-col l5 w3-padding">
@@ -330,6 +269,66 @@
 
     <div class="w3-panel"></div>
 
+</div>
+
+
+<div class="w3-container infoTab" id='SimplePlotTab' style="display:none">
+    <div class="w3-container w3-cell-row">
+        <div class="w3-cell w3-padding">
+            <h5> Description</h5>
+            <p> The dataset analyzer will create a simple plot of the selected data column. </p>
+            <h5> Instructions </h5>
+            <ul>
+                <li> Select the dataset on the dataset statistics tab</li>
+                <li> Choose a column from the Column Name menu below</li>
+                <li> Choose a plot type appropriate for the data type</li>
+                <li> Press Visualize Data Column to generate a plot </li>
+            </ul>
+            <h5> Limitations</h5>
+            <ul>
+                <li> Scatter plots require numerical data</li>
+                <li> Bar charts require string (object) data</li>
+            </ul>
+        </div>
+        <div class="w3-cell w3-padding">
+            <h5> Example 1</h5>
+            {{ webContent['datasetanalyzer.html']['Example 1 Description']|safe}}
+        </div>
+        <div class="w3-cell w3-padding">
+            <h5> Example 2</h5>
+            {{ webContent['datasetanalyzer.html']['Example 2 Description']|safe}}
+        </div>
+    </div>
+
+    {% if selectColumnToAnalyzeForm.columnName.choices %}
+    <div class="w3-container">
+        <form class="w3-container w3-padding-large" method="POST"
+            action="{{ url_for('datasetAnalyzer_bp.display_datasetAnalyzer') }}" enctype="multipart/form-data">
+            {{ selectColumnToAnalyzeForm.csrf_token(id = False) }}
+            <fieldset class="w3-container w3-padding-large {{webContent['layout']['fieldset-hover-border-color']}}">
+                <legend class="w3-xlarge">Choose Column to Analyze</legend>
+                <div class="w3-row-padding">
+                    {{ macro_display_formfield(selectColumnToAnalyzeForm.columnName, "w3-half") }}
+                    {{ macro_display_radioButtons(selectColumnToAnalyzeForm.plotType, "w3-threequarter") }}
+                </div>
+
+                <div class="w3-row w3-padding-large">
+                    {{ selectColumnToAnalyzeForm.submitColumnToAnalyze(class="w3-btn w3-blue w3-large") }}
+                </div>
+            </fieldset>
+        </form>
+        <div class="w3-panel"></div>
+        {% endif %}
+        <div class="w3-row-padding">
+            <div class="w3-col l4 w3-padding-16" id="dataplot"></div>
+        </div>
+        <div class="w3-row-padding">
+            <div class="w3-col l12 w3-padding-16" id="categoricalplot"></div>
+        </div>
+        <div class="w3-row-padding">
+            <div class="w3-col l12 w3-padding-16" id="multilineplot"></div>
+        </div>
+    </div>
 </div>
 
 
