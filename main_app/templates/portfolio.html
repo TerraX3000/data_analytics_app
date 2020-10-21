@@ -3,89 +3,42 @@
 
 {{ macro_display_flashed_messages() }}
 
+{# The following macros create html img elements based on the number of slides #}
+{# Note: the naming convention for slides uses zero padding (e.g. "0011.jpg") #}
+
+{% macro macro_addSlide(slideCount) %}
+{% for number in range(1,slideCount+1) %}
+<img class="mySlides" src="{{ webContent['portfolio']['url-prefix'] ~ '%04d' % (number) ~ ".jpg" }}"
+    style=" width:100%">
+{% endfor %}
+{% endmacro %}
+
+{% macro macro_addMiniSlide(slideCount) %}
+{% for number in range(1,slideCount+1) %}
+<div class="w3-col s1">
+    <img class="demo w3-padding-16 w3-opacity w3-hover-opacity-off"
+        src="{{ webContent['portfolio']['url-prefix'] ~ '%04d' % (number) ~ ".jpg" }}"
+        style=" width:100%;cursor:pointer" onclick="currentDiv({{ number }})">
+</div>
+{% endfor %}
+{% endmacro %}
+
 <div class="w3-panel"></div>
 
 {% if webContent['portfolio']['url-prefix'] %}
 <div class="w3-content w3-display-container" style="max-width:800px">
-    <img class="mySlides" src="{{ webContent['portfolio']['url-prefix'] ~ "0001.jpg" }}" style=" width:100%">
-    <img class="mySlides" src="{{ webContent['portfolio']['url-prefix'] ~ "0002.jpg" }}" style=" width:100%">
-    <img class="mySlides" src="{{ webContent['portfolio']['url-prefix'] ~ "0003.jpg" }}" style=" width:100%">
-    <img class="mySlides" src="{{ webContent['portfolio']['url-prefix'] ~ "0004.jpg" }}" style=" width:100%">
-    <img class="mySlides" src="{{ webContent['portfolio']['url-prefix'] ~ "0005.jpg" }}" style=" width:100%">
-    <img class="mySlides" src="{{ webContent['portfolio']['url-prefix'] ~ "0006.jpg" }}" style=" width:100%">
-    <img class="mySlides" src="{{ webContent['portfolio']['url-prefix'] ~ "0007.jpg" }}" style=" width:100%">
-    <img class="mySlides" src="{{ webContent['portfolio']['url-prefix'] ~ "0008.jpg" }}" style=" width:100%">
-    <img class="mySlides" src="{{ webContent['portfolio']['url-prefix'] ~ "0009.jpg" }}" style=" width:100%">
-    <img class="mySlides" src="{{ webContent['portfolio']['url-prefix'] ~ "0010.jpg" }}" style=" width:100%">
-    <img class="mySlides" src="{{ webContent['portfolio']['url-prefix'] ~ "0011.jpg" }}" style=" width:100%">
-    <img class="mySlides" src="{{ webContent['portfolio']['url-prefix'] ~ "0012.jpg" }}" style=" width:100%">
+    {{ macro_addSlide( webContent['portfolio']['slide-count']|int ) }}
 
     <a class="w3-button w3-display-left" onclick="plusDivs(-1)">&#10094;</a>
     <a class="w3-button w3-display-right" onclick="plusDivs(+1)">&#10095;</a>
+</div>
+<div class="w3-content w3-display-container" style="max-width:800px">
 
     <div class="w3-row-padding w3-section">
-        <div class="w3-col s1">
-            <img class="demo w3-opacity w3-hover-opacity-off"
-                src="{{ webContent['portfolio']['url-prefix'] ~ "0001.jpg" }}" style=" width:100%;cursor:pointer"
-                onclick="currentDiv(1)">
-        </div>
-        <div class="w3-col s1">
-            <img class="demo w3-opacity w3-hover-opacity-off"
-                src="{{ webContent['portfolio']['url-prefix'] ~ "0002.jpg" }}" style=" width:100%;cursor:pointer"
-                onclick="currentDiv(2)">
-        </div>
-        <div class="w3-col s1">
-            <img class="demo w3-opacity w3-hover-opacity-off"
-                src="{{ webContent['portfolio']['url-prefix'] ~ "0003.jpg" }}" style=" width:100%;cursor:pointer"
-                onclick="currentDiv(3)">
-        </div>
-        <div class="w3-col s1">
-            <img class="demo w3-opacity w3-hover-opacity-off"
-                src="{{ webContent['portfolio']['url-prefix'] ~ "0004.jpg" }}" style=" width:100%;cursor:pointer"
-                onclick="currentDiv(4)">
-        </div>
-        <div class="w3-col s1">
-            <img class="demo w3-opacity w3-hover-opacity-off"
-                src="{{ webContent['portfolio']['url-prefix'] ~ "0005.jpg" }}" style=" width:100%;cursor:pointer"
-                onclick="currentDiv(5)">
-        </div>
-        <div class="w3-col s1">
-            <img class="demo w3-opacity w3-hover-opacity-off"
-                src="{{ webContent['portfolio']['url-prefix'] ~ "0006.jpg" }}" style=" width:100%;cursor:pointer"
-                onclick="currentDiv(6)">
-        </div>
-        <div class="w3-col s1">
-            <img class="demo w3-opacity w3-hover-opacity-off"
-                src="{{ webContent['portfolio']['url-prefix'] ~ "0007.jpg" }}" style=" width:100%;cursor:pointer"
-                onclick="currentDiv(7)">
-        </div>
-        <div class="w3-col s1">
-            <img class="demo w3-opacity w3-hover-opacity-off"
-                src="{{ webContent['portfolio']['url-prefix'] ~ "0008.jpg" }}" style=" width:100%;cursor:pointer"
-                onclick="currentDiv(8)">
-        </div>
-        <div class="w3-col s1">
-            <img class="demo w3-opacity w3-hover-opacity-off"
-                src="{{ webContent['portfolio']['url-prefix'] ~ "0009.jpg" }}" style=" width:100%;cursor:pointer"
-                onclick="currentDiv(9)">
-        </div>
-        <div class="w3-col s1">
-            <img class="demo w3-opacity w3-hover-opacity-off"
-                src="{{ webContent['portfolio']['url-prefix'] ~ "0010.jpg" }}" style=" width:100%;cursor:pointer"
-                onclick="currentDiv(10)">
-        </div>
-        <div class="w3-col s1">
-            <img class="demo w3-opacity w3-hover-opacity-off"
-                src="{{ webContent['portfolio']['url-prefix'] ~ "0011.jpg" }}" style=" width:100%;cursor:pointer"
-                onclick="currentDiv(11)">
-        </div>
-        <div class="w3-col s1">
-            <img class="demo w3-opacity w3-hover-opacity-off"
-                src="{{ webContent['portfolio']['url-prefix'] ~ "0012.jpg" }}" style=" width:100%;cursor:pointer"
-                onclick="currentDiv(12)">
-        </div>
+        {{ macro_addMiniSlide( webContent['portfolio']['slide-count']|int ) }}
     </div>
 </div>
+
 
 <script>
     var slideIndex = 1;
