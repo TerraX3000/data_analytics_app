@@ -1,0 +1,122 @@
+{% extends 'layout.html'%}
+{% block content %}
+
+{{ macro_display_flashed_messages() }}
+
+<div class="w3-panel"></div>
+
+{% if webContent['portfolio']['url-prefix'] %}
+<div class="w3-content w3-display-container" style="max-width:800px">
+    <img class="mySlides" src="{{ webContent['portfolio']['url-prefix'] ~ "0001.jpg" }}" style=" width:100%">
+    <img class="mySlides" src="{{ webContent['portfolio']['url-prefix'] ~ "0002.jpg" }}" style=" width:100%">
+    <img class="mySlides" src="{{ webContent['portfolio']['url-prefix'] ~ "0003.jpg" }}" style=" width:100%">
+    <img class="mySlides" src="{{ webContent['portfolio']['url-prefix'] ~ "0004.jpg" }}" style=" width:100%">
+    <img class="mySlides" src="{{ webContent['portfolio']['url-prefix'] ~ "0005.jpg" }}" style=" width:100%">
+    <img class="mySlides" src="{{ webContent['portfolio']['url-prefix'] ~ "0006.jpg" }}" style=" width:100%">
+    <img class="mySlides" src="{{ webContent['portfolio']['url-prefix'] ~ "0007.jpg" }}" style=" width:100%">
+    <img class="mySlides" src="{{ webContent['portfolio']['url-prefix'] ~ "0008.jpg" }}" style=" width:100%">
+    <img class="mySlides" src="{{ webContent['portfolio']['url-prefix'] ~ "0009.jpg" }}" style=" width:100%">
+    <img class="mySlides" src="{{ webContent['portfolio']['url-prefix'] ~ "0010.jpg" }}" style=" width:100%">
+    <img class="mySlides" src="{{ webContent['portfolio']['url-prefix'] ~ "0011.jpg" }}" style=" width:100%">
+    <img class="mySlides" src="{{ webContent['portfolio']['url-prefix'] ~ "0012.jpg" }}" style=" width:100%">
+
+    <a class="w3-button w3-display-left" onclick="plusDivs(-1)">&#10094;</a>
+    <a class="w3-button w3-display-right" onclick="plusDivs(+1)">&#10095;</a>
+
+    <div class="w3-row-padding w3-section">
+        <div class="w3-col s1">
+            <img class="demo w3-opacity w3-hover-opacity-off"
+                src="{{ webContent['portfolio']['url-prefix'] ~ "0001.jpg" }}" style=" width:100%;cursor:pointer"
+                onclick="currentDiv(1)">
+        </div>
+        <div class="w3-col s1">
+            <img class="demo w3-opacity w3-hover-opacity-off"
+                src="{{ webContent['portfolio']['url-prefix'] ~ "0002.jpg" }}" style=" width:100%;cursor:pointer"
+                onclick="currentDiv(2)">
+        </div>
+        <div class="w3-col s1">
+            <img class="demo w3-opacity w3-hover-opacity-off"
+                src="{{ webContent['portfolio']['url-prefix'] ~ "0003.jpg" }}" style=" width:100%;cursor:pointer"
+                onclick="currentDiv(3)">
+        </div>
+        <div class="w3-col s1">
+            <img class="demo w3-opacity w3-hover-opacity-off"
+                src="{{ webContent['portfolio']['url-prefix'] ~ "0004.jpg" }}" style=" width:100%;cursor:pointer"
+                onclick="currentDiv(4)">
+        </div>
+        <div class="w3-col s1">
+            <img class="demo w3-opacity w3-hover-opacity-off"
+                src="{{ webContent['portfolio']['url-prefix'] ~ "0005.jpg" }}" style=" width:100%;cursor:pointer"
+                onclick="currentDiv(5)">
+        </div>
+        <div class="w3-col s1">
+            <img class="demo w3-opacity w3-hover-opacity-off"
+                src="{{ webContent['portfolio']['url-prefix'] ~ "0006.jpg" }}" style=" width:100%;cursor:pointer"
+                onclick="currentDiv(6)">
+        </div>
+        <div class="w3-col s1">
+            <img class="demo w3-opacity w3-hover-opacity-off"
+                src="{{ webContent['portfolio']['url-prefix'] ~ "0007.jpg" }}" style=" width:100%;cursor:pointer"
+                onclick="currentDiv(7)">
+        </div>
+        <div class="w3-col s1">
+            <img class="demo w3-opacity w3-hover-opacity-off"
+                src="{{ webContent['portfolio']['url-prefix'] ~ "0008.jpg" }}" style=" width:100%;cursor:pointer"
+                onclick="currentDiv(8)">
+        </div>
+        <div class="w3-col s1">
+            <img class="demo w3-opacity w3-hover-opacity-off"
+                src="{{ webContent['portfolio']['url-prefix'] ~ "0009.jpg" }}" style=" width:100%;cursor:pointer"
+                onclick="currentDiv(9)">
+        </div>
+        <div class="w3-col s1">
+            <img class="demo w3-opacity w3-hover-opacity-off"
+                src="{{ webContent['portfolio']['url-prefix'] ~ "0010.jpg" }}" style=" width:100%;cursor:pointer"
+                onclick="currentDiv(10)">
+        </div>
+        <div class="w3-col s1">
+            <img class="demo w3-opacity w3-hover-opacity-off"
+                src="{{ webContent['portfolio']['url-prefix'] ~ "0011.jpg" }}" style=" width:100%;cursor:pointer"
+                onclick="currentDiv(11)">
+        </div>
+        <div class="w3-col s1">
+            <img class="demo w3-opacity w3-hover-opacity-off"
+                src="{{ webContent['portfolio']['url-prefix'] ~ "0012.jpg" }}" style=" width:100%;cursor:pointer"
+                onclick="currentDiv(12)">
+        </div>
+    </div>
+</div>
+
+<script>
+    var slideIndex = 1;
+    showDivs(slideIndex);
+
+    function plusDivs(n) {
+        showDivs(slideIndex += n);
+    }
+
+    function currentDiv(n) {
+        showDivs(slideIndex = n);
+    }
+
+    function showDivs(n) {
+        var i;
+        var x = document.getElementsByClassName("mySlides");
+        var dots = document.getElementsByClassName("demo");
+        if (n > x.length) { slideIndex = 1 }
+        if (n < 1) { slideIndex = x.length }
+        for (i = 0; i < x.length; i++) {
+            x[i].style.display = "none";
+        }
+        for (i = 0; i < dots.length; i++) {
+            dots[i].className = dots[i].className.replace(" w3-opacity-off", "");
+        }
+        x[slideIndex - 1].style.display = "block";
+        dots[slideIndex - 1].className += " w3-opacity-off";
+    }
+</script>
+
+
+{% endif %}
+
+{% endblock content %}

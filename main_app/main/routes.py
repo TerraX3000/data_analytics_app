@@ -1,4 +1,11 @@
-from flask import render_template, redirect, url_for, flash, request, Blueprint
+from flask import (
+    render_template,
+    redirect,
+    url_for,
+    flash,
+    request,
+    Blueprint,
+)
 
 main_bp = Blueprint("main_bp", __name__)
 
@@ -11,3 +18,8 @@ def homePage():
 @main_bp.route("/about")
 def aboutPage():
     return render_template("about.html", title="About")
+
+
+@main_bp.route("/portfolio")
+def displayPortfolio():
+    return render_template("portfolio.html", title="Personal Portfolio")

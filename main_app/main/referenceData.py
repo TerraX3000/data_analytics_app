@@ -1,8 +1,7 @@
-from main_app.models import DatasetManager, WebContent
+from main_app.models import DatasetManager
 from main_app import db
 from sqlalchemy import distinct
 from datetime import date, timedelta
-from main_app.main.utilityfunctions import printLogEntry
 
 
 def getDatasetNames():
