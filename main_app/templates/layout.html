@@ -90,8 +90,12 @@
             <a href="/researchinfo" class="w3-bar-item w3-button w3-padding"><i class="fa fa-book fa-fw"></i> 
                 Research Info</a>
             {% if webContent['portfolio']['url-prefix'] %}
-            <a href="/portfolio" class="w3-bar-item w3-button w3-padding"><i class="fa fa-smile-o fa-fw"></i> 
+            <a href="/portfolio" class="w3-bar-item w3-button w3-padding"><i class="fa fa-slideshare fa-fw"></i> 
                 Personal Portfolio</a>
+            {% endif %}
+            {% if webContent['resume']['top-line'] %}
+            <a href="/resume" class="w3-bar-item w3-button w3-padding"><i class="fa fa-address-book fa-fw"></i> 
+                Resume</a>
             {% endif %}
         </div>
     </nav>

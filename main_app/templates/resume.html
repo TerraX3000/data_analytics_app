@@ -1,0 +1,55 @@
+{% extends 'layout.html'%}
+{% block content %}
+
+{{ macro_display_flashed_messages() }}
+
+<div class="w3-container w3-center">
+
+</div>
+
+
+<div class="w3-content w3-row-padding">
+    <div class="w3-threequarter">
+        {{ webContent['resume']['top-line']|safe }}
+    </div>
+
+    <div class="w3-quarter">
+        {{ webContent['resume']['contact-info']|safe }}
+    </div>
+
+    <div class="w3-threequarter">
+        <div class="{{ webContent['resume']['section-text-color'] }}">
+            <p class="w3-large">EXPERIENCE</p>
+        </div>
+        {{ webContent['resume']['experience-1']|safe }}
+        {{ webContent['resume']['experience-2']|safe }}
+        {{ webContent['resume']['experience-3']|safe }}
+        {{ webContent['resume']['experience-4']|safe }}
+        {{ webContent['resume']['experience-5']|safe }}
+        {{ webContent['resume']['experience-6']|safe }}
+        {{ webContent['resume']['experience-7']|safe }}
+        {{ webContent['resume']['experience-8']|safe }}
+        {{ webContent['resume']['experience-9']|safe }}
+        {{ webContent['resume']['experience-10']|safe }}
+    </div>
+
+    <div class="w3-quarter">
+        <div class="{{ webContent['resume']['section-text-color'] }}">
+            <p class="w3-large">SKILLS</p>
+        </div>
+        {{ webContent['resume']['skills']|safe }}
+
+        <div class="{{ webContent['resume']['section-text-color'] }}">
+            <p class="w3-large">AWARDS</p>
+        </div>
+        {{ webContent['resume']['awards']|safe }}
+
+        <div class="{{ webContent['resume']['section-text-color'] }}">
+            <p class="w3-large">EDUCATION</p>
+        </div>
+        {{ webContent['resume']['education']|safe }}
+
+    </div>
+</div>
+
+{% endblock content %}

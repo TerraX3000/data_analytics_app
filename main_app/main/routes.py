@@ -23,3 +23,8 @@ def aboutPage():
 @main_bp.route("/portfolio")
 def displayPortfolio():
     return render_template("portfolio.html", title="Personal Portfolio")
+
+
+@main_bp.route("/resume")
+def displayResume():
+    return render_template("resume.html", title="Resume")
