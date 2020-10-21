@@ -46,7 +46,6 @@
         <thead>
             <tr class="{{webContent['layout']['table-header-row-color']}}">
                 <th>Dataset Name</th>
-                <th>Created</th>
                 <th>Rows x Columns</th>
                 <th>Comment</th>
                 <th>Actions</th>
@@ -57,7 +56,6 @@
 
             <tr class="{{webContent['layout']['table-row-color']}} {{webContent['layout']['table-row-hover-color']}}">
                 <td>{{ dataset.datasetName }}</td>
-                <td>{{ dataset.createDateTime | datetimefilter }}</td>
                 <td>{{ datasetDetail}}</td>
                 <td>{{ dataset.comment }}</td>
                 <td><button type="button" class="w3-btn w3-red"
