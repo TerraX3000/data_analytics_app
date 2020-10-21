@@ -6,12 +6,14 @@ from flask import (
     request,
     Blueprint,
 )
+from main_app.main.utilityfunctions import printLogEntry
 
 main_bp = Blueprint("main_bp", __name__)
 
 
 @main_bp.route("/")
 def homePage():
+    printLogEntry("Displaying home page")
     return render_template("home.html", title="Home")
 
 
@@ -22,9 +24,11 @@ def aboutPage():
 
 @main_bp.route("/portfolio")
 def displayPortfolio():
+    printLogEntry("Displaying portfolio")
     return render_template("portfolio.html", title="Personal Portfolio")
 
 
 @main_bp.route("/resume")
 def displayResume():
+    printLogEntry("Displaying resume")
     return render_template("resume.html", title="Resume")
