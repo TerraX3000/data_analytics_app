@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 {% if title %}
-<title>My App - {{ title }}</title>
+<title>{{ webContent['layout']['app-browser-tab-title'] }} - {{ title }}</title>
 {% else %}
-<title>My App</title>
+<title>{{ webContent['layout']['app-browser-tab-title'] }}</title>
 {% endif %}
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -56,7 +56,7 @@
     <div class="w3-bar w3-top {{webContent['layout']['top-bar-color']}} w3-large" style="z-index:4">
         <button id="menuButton" class="w3-bar-item w3-button w3-hover-none w3-hover-text-light-grey"
             onclick="w3_open();"><i class="fa fa-bars"></i>  Menu</button>
-        <span class="w3-bar-item w3-right">Data Analytics</span>
+        <span class="w3-bar-item w3-right">{{ webContent['layout']['app-nav-bar-title'] }}</span>
     </div>
 
     <!-- Sidebar/menu -->
