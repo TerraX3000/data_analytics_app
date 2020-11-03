@@ -45,7 +45,7 @@ def display_datasetAnalyzer():
             datasetDetails = analyzeDataset(dataset_id, datasetDetails)
             # print(datasetDetails)
             # print(datasetDetails["describeDataset"])
-            df = datasetDetails["describeDataset"].round(1)
+            df = datasetDetails["describeDataset"].round(6)
             dfHtmlTableComponents = dataframeHtmlTableComponents(df)
             if datasetDetails["columnChoices"]:
                 selectColumnToAnalyzeFormDetails.columnName.choices = datasetDetails[
