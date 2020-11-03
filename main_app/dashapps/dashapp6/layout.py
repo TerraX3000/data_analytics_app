@@ -32,6 +32,7 @@ def build_banner():
         children=[
             html.Div(
                 id="banner-text",
+                className="w3-text-white",
                 children=[
                     html.H5("Manufacturing SPC Dashboard"),
                     html.H6("Process Control and Exception Reporting"),
@@ -60,7 +61,7 @@ def build_tabs():
             dcc.Tabs(
                 id="app-tabs",
                 value="tab2",
-                className="custom-tabs",
+                className="custom-tabs, w3-text-white",
                 children=[
                     dcc.Tab(
                         id="Specs-tab",
@@ -142,6 +143,7 @@ def build_tab_1():
         html.Div(
             id="set-specs-intro-container",
             # className='twelve columns',
+            className="w3-text-white",
             children=html.P(
                 "Use historical control limits to establish a benchmark, or set new values."
             ),
@@ -192,7 +194,7 @@ def build_tab_1():
 
 
 ud_usl_input = daq.NumericInput(
-    id="ud_usl_input", className="setting-input", size=200, max=9999999
+    id="ud_usl_input", className="setting-input w3-text-white", size=200, max=9999999
 )
 ud_lsl_input = daq.NumericInput(
     id="ud_lsl_input", className="setting-input", size=200, max=9999999
@@ -209,11 +211,11 @@ def build_value_setter_line(line_num, label, value, col3):
     return html.Div(
         id=line_num,
         children=[
-            html.Label(label, className="four columns"),
-            html.Label(value, className="four columns"),
-            html.Div(col3, className="four columns"),
+            html.Label(label, className="w3-quarter w3-text-white"),
+            html.Label(value, className="w3-quarter w3-text-white"),
+            html.Div(col3, className="w3-quarter w3-text-white"),
         ],
-        className="row",
+        className="w3-row w3-text-white",
     )
 
 
@@ -271,6 +273,7 @@ def build_quick_stats_panel():
         children=[
             html.Div(
                 id="card-1",
+                className="w3-text-white",
                 children=[
                     html.P("Operator ID"),
                     daq.LEDDisplay(
@@ -284,6 +287,7 @@ def build_quick_stats_panel():
             ),
             html.Div(
                 id="card-2",
+                className="w3-text-white",
                 children=[
                     html.P("Time to completion"),
                     daq.Gauge(
@@ -319,6 +323,7 @@ def build_top_panel(stopped_interval):
                     generate_section_banner("Process Control Metrics Summary"),
                     html.Div(
                         id="metric-div",
+                        className="w3-text-white",
                         children=[
                             generate_metric_list_header(),
                             html.Div(
@@ -1041,7 +1046,7 @@ def register_callbacks(app):
             }
             new_df = pd.DataFrame.from_dict(new_df_dict)
             return dash_table.DataTable(
-                style_header={"fontWeight": "bold", "color": "inherit"},
+                style_header={"fontWeight": "bold", "color": "white"},
                 style_as_list_view=True,
                 fill_width=True,
                 style_cell_conditional=[
@@ -1051,7 +1056,7 @@ def register_callbacks(app):
                     "backgroundColor": "#1e2130",
                     "fontFamily": "Open Sans",
                     "padding": "0 2rem",
-                    "color": "darkgray",
+                    "color": "white",
                     "border": "none",
                 },
                 css=[
