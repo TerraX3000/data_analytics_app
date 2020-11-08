@@ -169,6 +169,14 @@ def create_app(config_class):
         from main_app.dashapps.dashapp10.layout import (
             register_callbacks as register_callbacks10,
         )
+        from main_app.dashapps.dashapp11.layout import layout as layout11
+        from main_app.dashapps.dashapp11.layout import (
+            register_callbacks as register_callbacks11,
+        )
+        from main_app.dashapps.dashapp12.layout import layout as layout12
+        from main_app.dashapps.dashapp12.callbacks import (
+            register_callbacks as register_callbacks12,
+        )
 
     register_dashapp(
         app, "Bar Chart Sample", "dashapp", "datavisualizationsamples", layout1, False
@@ -221,6 +229,22 @@ def create_app(config_class):
         "datasetanalyzer",
         layout10,
         register_callbacks10,
+    )
+    register_dashapp(
+        app,
+        "Trending Dashboard",
+        "dashapp11",
+        "datasetanalyzer",
+        layout11,
+        register_callbacks11,
+    )
+    register_dashapp(
+        app,
+        "Asphalt Paver Cross Filtering",
+        "dashapp12",
+        "datasetanalyzer",
+        layout12,
+        register_callbacks12,
     )
 
     return app
