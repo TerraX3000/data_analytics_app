@@ -450,7 +450,8 @@ def register_callbacks(app):
         print("Running updateDropdownOptionsForCompanyProductTable callback")
         dff = getDataFrameFilteredBy(productCategory, product, company)
 
-        product_categories = dff["Product Category"].unique()
+        # Use df to include all product categories in the drop down list
+        product_categories = df["Product Category"].unique()
         product_categories_plusAll = product_categories.tolist()
         product_categories_plusAll.insert(0, "All")
         product_categories_options = [
@@ -458,11 +459,15 @@ def register_callbacks(app):
         ]
         print(product_categories_options)
 
+        # Use dff to only list products that are available for the selected product category
+        # or selected company
         product = dff["Product"].unique()
         product_plusAll = product.tolist()
         product_plusAll.insert(0, "All")
         product_options = [{"label": i, "value": i} for i in product_plusAll]
 
+        # Use dff to only list companies that have the selected product category
+        # or selected product
         companies = dff["Company"].unique()
         companies_plusAll = companies.tolist()
         companies_plusAll.insert(0, "All")
@@ -502,6 +507,22 @@ def register_callbacks(app):
         ],
     )
     def updateDropdownOptionsForCompanyProductTable(productCategory, product, company):
+        return updateDropDownOptions(productCategory, product, company)
+
+    # Update dropdown menus for map
+    @app.callback(
+        [
+            Output("map-category", "options"),
+            Output("map-product", "options"),
+            Output("map-company", "options"),
+        ],
+        [
+            Input("map-category", "value"),
+            Input("map-product", "value"),
+            Input("map-company", "value"),
+        ],
+    )
+    def updateDropdownOptionsForMapPlot(productCategory, product, company):
         return updateDropDownOptions(productCategory, product, company)
 
     # Company-Product Table
@@ -581,17 +602,57 @@ def register_callbacks(app):
         ],
     )
     def updateParallelCategoriesPlot(productCategory, product, company):
+        print("Running updateParallelCategoriesPlot callback")
         dff = getDataFrameFilteredBy(productCategory, product, company)
         dff = dff.drop_duplicates(
             subset=["Company", "Product Category", "Product", "Purchase Type", "Age"]
         )
-        # dff = dff.loc[:, ["Company","Product Category", "Product", "Purchase Type", "Age"]]
         fig = px.parallel_categories(
             dff,
             dimensions=["Product Category", "Product", "Purchase Type", "Age"],
             color="Age",
-            # color_continuous_scale=px.colors.sequential.Inferno,
             color_continuous_scale=px.colors.sequential.Rainbow,
             title="Product, Purchase Type, and Age Information",
+        )
+        return fig
+
+    # Create map plot
+    @app.callback(
+        Output("map-plot", "figure"),
+        [
+            Input("map-category", "value"),
+            Input("map-product", "value"),
+            Input("map-company", "value"),
+        ],
+    )
+    def updateMapPlot(productCategory, product, company):
+        print("Running updateMapPlot callback")
+        dff = getDataFrameFilteredBy(productCategory, product, company)
+        dff = dff.drop_duplicates(
+            subset=[
+                "Company",
+                "Product Category",
+                "Product",
+                "Purchase Type",
+                "Age",
+            ]
+        )
+        # px.set_mapbox_access_token()
+        fig = px.scatter_mapbox(
+            dff,
+            lat="Latitude",
+            lon="Longitude",
+            hover_name="Company",
+            hover_data=[
+                "Product Category",
+                "Product",
+                "VIN",
+            ],
+            color="Product",
+            size="Age",
+            color_continuous_scale=px.colors.sequential.Rainbow,
+            size_max=15,
+            zoom=6,
+            mapbox_style="open-street-map",
         )
         return fig
