@@ -1,0 +1,95 @@
+{% extends 'layout.html'%}
+{% block content %}
+<div class="w3-container w3-center {{webContent['layout']['top-panel-color']}} w3-display-container">
+    <span onclick="this.parentElement.style.display='none'" class="w3-button w3-display-left w3-large">X</span>
+    <h4>Use Google Chrome for best results</h4>
+</div>
+
+<div class="w3-panel"></div>
+
+<div class="w3-container">
+    <h5><b>Overview</b></h5>
+    <p>The Telematics Analysis Demo is intended to support these objectives:</p>
+    <ul>
+        <li>Display methods to visualize relevant data types expected in Roadtec telematics data</li>
+        <li>Show the ability to understand Roadtec's product portfolio and apply it in useful ways</li>
+        <li>Demonstrate technical skills to rapidly prototype impactful applications</li>
+        <li>Provide a foundation for discussions about skills and requirements for the data analyst position</li>
+    </ul>
+
+</div>
+
+<div class="w3-panel">
+    <h3> Clicking on the example below will direct you to the interactive Telematics Analysis Demo </h3>
+</div>
+
+<div class="w3-row-padding">
+    <div class="w3-threequarter">
+        <div class="w3-card-4">
+            <a href="/dashapp12/">
+                <div class="w3-container {{webContent['layout']['card-header-color']}} ">
+                    <h4>Telematics Analysis Demo</h4>
+                </div>
+                <img src="{{ url_for('static', filename="img/screencapture-telematics.png") }}"
+                    alt="Telematics Analysis Demo" style="width:100%">
+            </a>
+            <div class="w3-container {{webContent['layout']['card-footer-color']}} ">
+                <p>This initial demo showcases a variety of data visualization methods using a simulated dataset.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="w3-panel"></div>
+
+<div class="w3-container">
+    </p>
+    <h5><b>Analysis and Visualization Examples</b></h5>
+    <p>The Telematics Analysis Demo utilizes many types of analysis and visualization methods including:</p>
+    <ul>
+        <li>Tabular data lists</li>
+        <li>Time series plots</li>
+        <li>Cross-filtering plots</li>
+        <li>Categorical data analyis</li>
+        <li>Geospatial visualization</li>
+    </ul>
+
+    <h5><b>Simulated Telematics Dataset</b></h5>
+    <p>The data used for the Telematics Analysis Demo was generated based on research and experience. It includes an
+        array of data types including:</p>
+    <ul>
+        <li>Product Categories (e.g., Asphalt Pavers, Asphalt Screeds, Material Transfer Vehicles)</li>
+        <li>Specific Roadtec Products (e.g., RP-170e/ex, EZ-R2-10, RX-900e/ex, etc.)</li>
+        <li>Representive types of telematics data (e.g., Engine, Screed, GPS, etc.)</li>
+        <li>Corporate data (e.g., customer names, purchase type, product age, etc.)</li>
+        <li>Date, time, and geospatial data</li>
+    </ul>
+    <p>The dataset was created using a Python script and used random distributions to generate realistic data sets.</p>
+    <h5><b>Description of Coding and Database Utilization</b></h5>
+    <p>The Telematics Analysis Demo is built on the Data Analytics app as described <a href="/">on the home page</a>.
+        Specific details are described below:</p>
+    <ul>
+        <li>Coding Language. The visualizations are implemented with the Plotly Dash module designed for Python.</li>
+        <li>Database. The simulated data was generated as a CSV file with a Python script. The CSV file was uploaded to
+            the MySQL database using the Pandas module.</li>
+        <li>Data Conditioning. The Pandas module for Python is used to read the data from the MySQL database. Pandas
+            functions are then used to transform the data as needed for the Plotly graphs.</li>
+    </ul>
+    <p> All source code is available on GitHub at <a target="_blank"
+            href="https://github.com/TerraX3000/data_analytics_app">
+            https://github.com/TerraX3000/data_analytics_app</a></p>
+
+    <h5><b>Project Plan</b></h5>
+    <p>The initial version of the Telematics Analysis Demo was focused on developing a foundation of data visualization
+        using representative data. The next steps will focus on applying trending algorithms to the dataset to
+        characterize the data and provide a baseline for anomaly detection.</p>
+</div>
+
+
+
+
+<div class="w3-panel"></div>
+
+
+
+{% endblock content %}

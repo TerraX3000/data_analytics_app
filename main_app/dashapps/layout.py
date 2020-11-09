@@ -8,6 +8,8 @@ def html_layout(title, returnToPage):
         return_link_label = "Data Visualization Overview"
     elif returnToPage == "datasetanalyzer":
         return_link_label = "Dataset Analyzer"
+    elif returnToPage == "telematics":
+        return_link_label = "Telematics Analysis Demo Overview"
     else:
         return_link_label = "Previous Page"
     webContent = getWebContent(WebContent)

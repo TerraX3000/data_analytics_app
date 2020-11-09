@@ -32,3 +32,9 @@ def displayPortfolio():
 def displayResume():
     printLogEntry("Displaying resume")
     return render_template("resume.html", title="Resume")
+
+
+@main_bp.route("/telematics")
+def displayTelematics():
+    printLogEntry("Displaying telematics")
+    return render_template("telematics.html", title="Telematics Analysis Demo Overview")

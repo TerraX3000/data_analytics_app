@@ -80,6 +80,10 @@
                 title="close menu"><i class="fa fa-remove fa-fw"></i>  Close Menu</a>
             <a href="/" class="w3-bar-item w3-button w3-padding"><i class="fa fa-home fa-fw"></i> 
                 Home</a>
+            {% if webContent['telematics']['show/hide']=='show' %}
+            <a href="/telematics" class="w3-bar-item w3-button w3-padding"><i class="fa fa-line-chart fa-fw"></i> 
+                Telematics Analysis Demo</a>
+            {% endif %}
             <a href="/datavisualizationsamples" class="w3-bar-item w3-button w3-padding"><i
                     class="fa fa-area-chart fa-fw"></i> 
                 Data Visualization Samples</a>
@@ -109,7 +113,7 @@
     <div class="w3-main" style="margin-left:0px;margin-top:43px;">
 
         <div class="w3-container {{webContent['layout']['title-bar-color']}} w3-row">
-            <div class="w3-third">
+            <div class="w3-threequarter">
                 <h2>{{title}}</h2>
             </div>
         </div>
