@@ -13,6 +13,10 @@ def html_layout(title, returnToPage):
     else:
         return_link_label = "Previous Page"
     webContent = getWebContent(WebContent)
+    if "dash-app-background-color" in webContent["layout"]:
+        backgroundColor = webContent["layout"]["dash-app-background-color"]
+    else:
+        backgroundColor = webContent["layout"]["background-color"]
 
     layout = (
         """
@@ -56,7 +60,7 @@ def html_layout(title, returnToPage):
         + webContent["layout"]["background-color"]
         + """ "></div>
             <div class=" """
-        + webContent["layout"]["background-color"]
+        + backgroundColor
         + """ ">
                 {%app_entry%}
             </div>
