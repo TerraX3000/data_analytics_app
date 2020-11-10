@@ -68,16 +68,6 @@ def register_callbacks(app):
         return [parameterOptions, parameterOptions]
 
     # Update the multi-line plot variable choices based on available choices for the selected product
-    @app.callback(
-        [
-            Output("multi-line-plot-variable", "options"),
-        ],
-        [
-            Input("multi-line-product-category", "value"),
-            Input("multi-line-product", "value"),
-            Input("multi-line-company", "value"),
-        ],
-    )
     def updateAvailableParameterOptionsMultiPlot(
         productCategory,
         product,
@@ -90,7 +80,27 @@ def register_callbacks(app):
         parameterOptions = dff["Parameter"].unique()
         parameterOptions = [{"label": i, "value": i} for i in parameterOptions]
         print("parameterOptions=", parameterOptions)
-        return [parameterOptions]
+        return [parameterOptions, parameterOptions, parameterOptions]
+
+    @app.callback(
+        [
+            Output("multi-line-plot-variable", "options"),
+            Output("multi-line-subplot-1-variable", "options"),
+            Output("multi-line-subplot-2-variable", "options"),
+        ],
+        setDropdownMenuCallbackInputParameters("multi-line"),
+    )
+    def updateAvailableParameterOptionsMultiPlotVariable(
+        productCategory,
+        product,
+        company,
+    ):
+        print(
+            f"Running updateAvailableParameterOptionsMultiPlotVariable({productCategory}, {product}, {company})"
+        )
+        return updateAvailableParameterOptionsMultiPlot(
+            productCategory, product, company
+        )
 
     # Update cross-filter plot based on input values
     @app.callback(
@@ -101,9 +111,8 @@ def register_callbacks(app):
             Input("cross-filter-company", "value"),
             Input("crossfilter-xaxis-column", "value"),
             Input("crossfilter-yaxis-column", "value"),
-            Input("crossfilter-xaxis-type", "value"),
-            Input("crossfilter-yaxis-type", "value"),
-            Input("crossfilter-year--slider", "value"),
+            # Input("crossfilter-xaxis-type", "value"),
+            # Input("crossfilter-yaxis-type", "value"),
         ],
     )
     def update_graph(
@@ -112,13 +121,11 @@ def register_callbacks(app):
         company,
         xaxis_column_name,
         yaxis_column_name,
-        xaxis_type,
-        yaxis_type,
-        year_value,
+        # xaxis_type,
+        # yaxis_type,
     ):
         print("Running update_graph callback")
         dff = getDataFrameFilteredBy(productCategory, product, company)
-        # dff = dff[dff["dayofyear"] == year_value]
         dff = dff.sort_values("dayofyear")
 
         # Construct new dataframe ndf with the x-axis-column and y-axis-column as dataframe columns
@@ -140,6 +147,7 @@ def register_callbacks(app):
             x=xaxis_column_name,
             y=yaxis_column_name,
             animation_frame="dayofyear",
+            labels={"dayofyear": "Julian Day Number"},
             color="Product",
             hover_name="Company",
             hover_data=[
@@ -151,13 +159,13 @@ def register_callbacks(app):
             ],
         )
 
-        fig.update_xaxes(
-            title=xaxis_column_name, type="linear" if xaxis_type == "Linear" else "log"
-        )
+        # fig.update_xaxes(
+        #     title=xaxis_column_name, type="linear" if xaxis_type == "Linear" else "log"
+        # )
 
-        fig.update_yaxes(
-            title=yaxis_column_name, type="linear" if yaxis_type == "Linear" else "log"
-        )
+        # fig.update_yaxes(
+        #     title=yaxis_column_name, type="linear" if yaxis_type == "Linear" else "log"
+        # )
 
         fig.update_layout(
             margin={"l": 40, "b": 40, "t": 10, "r": 0}, hovermode="closest"
@@ -168,7 +176,7 @@ def register_callbacks(app):
         return fig
 
     # Small time-series plots
-    def create_time_series(dff, axis_type, title):
+    def create_time_series(dff, title):
 
         fig = px.scatter(dff, x="Ops Time", y="Value")
 
@@ -176,7 +184,7 @@ def register_callbacks(app):
 
         fig.update_xaxes(showgrid=False)
 
-        fig.update_yaxes(type="linear" if axis_type == "Linear" else "log")
+        # fig.update_yaxes(type="linear" if axis_type == "Linear" else "log")
 
         fig.add_annotation(
             x=0,
@@ -201,10 +209,10 @@ def register_callbacks(app):
         [
             Input("crossfilter-indicator-scatter", "clickData"),
             Input("crossfilter-xaxis-column", "value"),
-            Input("crossfilter-xaxis-type", "value"),
+            # Input("crossfilter-xaxis-type", "value"),
         ],
     )
-    def update_x_timeseries(clickData, xaxis_column_name, axis_type):
+    def update_x_timeseries(clickData, xaxis_column_name):
         print("Running update_y_timeseries callback")
         productCategory = "All"
         product = "All"
@@ -225,7 +233,7 @@ def register_callbacks(app):
         dff = dff[dff["Parameter"] == xaxis_column_name]
         dff = dff[dff["Activity Group Id"] == activityGroupId]
         title = "<b>{}</b><br>{}".format(company, xaxis_column_name)
-        return create_time_series(dff, axis_type, title)
+        return create_time_series(dff, title)
 
     # Update the y-time series plot for the cross-filter plot
     @app.callback(
@@ -233,10 +241,10 @@ def register_callbacks(app):
         [
             Input("crossfilter-indicator-scatter", "clickData"),
             Input("crossfilter-yaxis-column", "value"),
-            Input("crossfilter-yaxis-type", "value"),
+            # Input("crossfilter-yaxis-type", "value"),
         ],
     )
-    def update_y_timeseries(clickData, yaxis_column_name, axis_type):
+    def update_y_timeseries(clickData, yaxis_column_name):
         print("Running update_x_timeseries callback")
         productCategory = "All"
         product = "All"
@@ -249,7 +257,7 @@ def register_callbacks(app):
             activityGroupId = 1
         dff = dff[dff["Parameter"] == yaxis_column_name]
         dff = dff[dff["Activity Group Id"] == activityGroupId]
-        return create_time_series(dff, axis_type, yaxis_column_name)
+        return create_time_series(dff, yaxis_column_name)
 
     # Multi-line plot
     @app.callback(
@@ -266,11 +274,19 @@ def register_callbacks(app):
 
         dff = getDataFrameFilteredBy(productCategory, product, company)
         df_multi_line = dff.loc[df["Parameter"] == variable]
+
+        # Determine scaling for plot axes
+        min_y = df_multi_line["Value"].min()
+        max_y = df_multi_line["Value"].max()
+        min_y = min_y * 0.2
+        max_y = max_y * 1.2
+
         multi_line_fig = px.line(
             df_multi_line,
             x="Ops Time",
             y="Value",
-            color="Product",
+            range_y=[min_y, max_y],
+            color="Product Category",
             line_group="Activity Group Id",
             hover_name="Company",
             hover_data=[
@@ -296,9 +312,12 @@ def register_callbacks(app):
     # Update the param-01 time-series plot for the multi-line plot
     @app.callback(
         Output("param-01-plot", "figure"),
-        Input("multi-line-plot", "clickData"),
+        [
+            Input("multi-line-plot", "clickData"),
+            Input("multi-line-subplot-1-variable", "value"),
+        ],
     )
-    def update_param_01_timeseries(clickData):
+    def update_param_01_timeseries(clickData, variable):
         print("Running update_param_01_timeseries callback")
         for key, value in clickData.items():
             print(key, value)
@@ -316,17 +335,20 @@ def register_callbacks(app):
         else:
             company = "Hollis & Hollis Group Inc (Clarksville, TN)"
         dff = df[df["Company"] == company]
-        dff = dff[dff["Parameter"] == "Fuel Usage"]
+        dff = dff[dff["Parameter"] == variable]
         dff = dff[dff["Activity Group Id"] == activityGroupId]
-        title = "<b>{}</b><br>{}".format(company, "Fuel Usage")
-        return create_time_series(dff, "Linear", title)
+        title = "<b>{}</b><br>{}".format(company, variable)
+        return create_time_series(dff, title)
 
     # Update the param-02 time-series plot for the multi-line plot
     @app.callback(
         Output("param-02-plot", "figure"),
-        [Input("multi-line-plot", "clickData")],
+        [
+            Input("multi-line-plot", "clickData"),
+            Input("multi-line-subplot-2-variable", "value"),
+        ],
     )
-    def update_param_02_timeseries(clickData):
+    def update_param_02_timeseries(clickData, variable):
         print("Running update_param_02_timeseries callback")
         if "customdata" in clickData["points"][0]:
             activityGroupId = clickData["points"][0]["customdata"][0]
@@ -339,9 +361,9 @@ def register_callbacks(app):
         else:
             company = "Hollis & Hollis Group Inc (Clarksville, TN)"
         dff = df[df["Company"] == company]
-        dff = dff[dff["Parameter"] == "Distance"]
+        dff = dff[dff["Parameter"] == variable]
         dff = dff[dff["Activity Group Id"] == activityGroupId]
-        return create_time_series(dff, "Linear", "Distance")
+        return create_time_series(dff, variable)
 
     def create_sparkline_plot(activityGroupId, sensorCategory, title):
         print("Running create_sparkline_plot() for", sensorCategory)
@@ -420,21 +442,33 @@ def register_callbacks(app):
     def update_SparklineTitle(clickData):
         print("Running update_SparklineTitle() callback")
         if "customdata" in clickData["points"][0]:
+            print("Sparkline:")
+            for key, value in clickData.items():
+                print(key, value)
             activityGroupId = clickData["points"][0]["customdata"][0]
-            productCategory = clickData["points"][0]["customdata"][4]
-            product = clickData["points"][0]["customdata"][5]
-            date = clickData["points"][0]["customdata"][6]
-            date = datetime.datetime.strptime(date, "%Y-%m-%dT%H:%M:%S")
-            print("activityGroupId found! " + str(activityGroupId))
+            if len(clickData["points"][0]["customdata"]) > 3:
+                productCategory = clickData["points"][0]["customdata"][4]
+                product = clickData["points"][0]["customdata"][5]
+                date = clickData["points"][0]["customdata"][6]
+                date = datetime.datetime.strptime(date, "%Y-%m-%dT%H:%M:%S")
+                if "hovertext" in clickData["points"][0]:
+                    company = clickData["points"][0]["hovertext"]
+                    print("hovertext found! " + company)
+                else:
+                    company = ""
+                title = f"**Product Category:** {productCategory} **Product:** {product} **Activity Group Id:** {activityGroupId} **Date:** {date:%Y-%m-%d} **Company:** {company}"
+            else:
+                title = f"**Activity Group Id:** {activityGroupId}"
         else:
             activityGroupId = 1
-        if "hovertext" in clickData["points"][0]:
-            company = clickData["points"][0]["hovertext"]
-            print("hovertext found! " + company)
-        else:
-            company = "Hollis & Hollis Group Inc (Clarksville, TN)"
+            title = f"**Activity Group Id:** {activityGroupId}"
+        # if "hovertext" in clickData["points"][0]:
+        #     company = clickData["points"][0]["hovertext"]
+        #     print("hovertext found! " + company)
+        #     company=""
+        # else:
+        #     company = "Hollis & Hollis Group Inc (Clarksville, TN)"
 
-        title = f"**Product Category:** {productCategory} **Product:** {product} **Activity Group Id:** {activityGroupId} **Date:** {date:%Y-%m-%d} **Company:** {company}"
         return title
 
     # Create sparkline plots
@@ -546,8 +580,8 @@ def register_callbacks(app):
             print("hovertext found! " + company)
         else:
             company = "Hollis & Hollis Group Inc (Clarksville, TN)"
-        sensorCategory = "Engine"
-        title = "Engine2"
+        sensorCategory = "Grade"
+        title = "Grade"
         return create_sparkline_plot(activityGroupId, sensorCategory, title)
 
     # Dynamically update the dropdown choices based on the other dropdown selections
