@@ -10,12 +10,57 @@ from datetime import datetime
 
 external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
 
-df = pd.read_sql_table("dataset_Telematics_Data_6", db.engine, parse_dates=["Date"])
+print("Initializing layout for telematics")
+try:
+    df = pd.read_sql_table("dataset_Telematics_Data_6", db.engine, parse_dates=["Date"])
+    print("Using telematics file from MySQL database")
+except:
+    df = pd.read_csv(
+        "main_app/static/data/sample_telematics_data.csv",
+        parse_dates=["Date"],
+    )
+    print(
+        "Unable to find telematics file in MySQL database. Using built-in sample_telematics_data.csv file instead"
+    )
+
 # Convert the date and add new column for day of year which uses integer values suitable for the slider widget
 df["dayofyear"] = df["Date"].dt.dayofyear
 
 product_categories = df["Product Category"].unique()
 available_indicators = df["Parameter"].unique()
+
+
+def insertDropDownMenus(idPrefix):
+    print("Inserting dropdown menu for", idPrefix)
+    dropDownSelections = html.Div(
+        html.Div(
+            [
+                dcc.Dropdown(
+                    id=idPrefix + "-product-category",
+                    value="Asphalt Screed",
+                    className="w3-text-black w3-padding w3-quarter",
+                ),
+                dcc.Dropdown(
+                    id=idPrefix + "-product",
+                    value="All",
+                    className="w3-text-black w3-padding w3-quarter",
+                ),
+                dcc.Dropdown(
+                    id=idPrefix + "-company",
+                    value="All",
+                    className="w3-text-black w3-padding w3-half",
+                ),
+            ],
+            className="w3-row-padding",
+            # style={"display": "inline-block", "width": "30%"},
+        ),
+        style={
+            "borderTop": "thin lightgrey solid",
+            "backgroundColor": "rgb(250, 250, 250)",
+            "padding": "10px 5px",
+        },
+    )
+    return dropDownSelections
 
 
 layout = html.Div(
@@ -24,9 +69,9 @@ layout = html.Div(
             [
                 html.H1("Data Analysis and Trending"),
                 html.P("Perform simple data analysis on simulated telematics data"),
-                html.H2("Step 1.  Data Set Review and Selection"),
+                html.H2("Example 1.  Data Set Review"),
                 html.P(
-                    "Use the drop down filters to narrow your analysis based on product category, product, and company."
+                    "Use the drop down filters to tailor your analysis based on product category, product, and company."
                 ),
                 html.P(
                     "The data table lists each company and their product inventory."
@@ -35,34 +80,7 @@ layout = html.Div(
             className="w3-container",
         ),
         # Table
-        html.Div(
-            html.Div(
-                [
-                    dcc.Dropdown(
-                        id="table-product-category",
-                        value="Asphalt Paver",
-                        className="w3-text-black w3-padding w3-quarter",
-                    ),
-                    dcc.Dropdown(
-                        id="table-product",
-                        value="All",
-                        className="w3-text-black w3-padding w3-quarter",
-                    ),
-                    dcc.Dropdown(
-                        id="table-company",
-                        value="All",
-                        className="w3-text-black w3-padding w3-half",
-                    ),
-                ],
-                className="w3-row-padding",
-                # style={"display": "inline-block", "width": "30%"},
-            ),
-            style={
-                "borderTop": "thin lightgrey solid",
-                "backgroundColor": "rgb(250, 250, 250)",
-                "padding": "10px 5px",
-            },
-        ),
+        insertDropDownMenus("table"),
         # html.Div(
         #     [
         #         dcc.Graph(id="company-equipment-table"),
@@ -100,12 +118,12 @@ layout = html.Div(
         # Trending graphs
         html.Div(
             [
-                html.H2("Step 2.  View Sensor Time-Series Data"),
+                html.H2("Example 2.  View Sensor Time-Series Data"),
                 html.P(
                     "The main plot shows the selected parameter as a function of time. "
                 ),
                 html.P(
-                    "Data can be narrowed down by selecting the product name in the legend."
+                    "Data can be narrowed down by double-clicking the product name in the legend."
                 ),
                 html.P("Values are displayed by hovering over data points."),
                 html.P(
@@ -114,11 +132,11 @@ layout = html.Div(
             ],
             className="w3-container",
         ),
+        insertDropDownMenus("multi-line"),
         html.Div(
             [
                 dcc.Dropdown(
                     id="multi-line-plot-variable",
-                    options=[{"label": i, "value": i} for i in available_indicators],
                     value="Fuel Usage",
                     className="w3-text-black w3-padding w3-quarter",
                 ),
@@ -148,27 +166,29 @@ layout = html.Div(
         # ),
         html.Div(
             [
-                html.H2("Step 3.  View Sparkline Plots for Categorized Data Sets"),
+                html.H2("Example 3.  View Sparkline Plots for Sensor Categories"),
                 html.P(
-                    "Sparkline plots show trending data for data in different categories."
+                    "Sparkline plots show trending data for different sensor categories."
                 ),
-                html.P("Values are displayed by hovering over data points."),
+                html.P(
+                    "Click on a line in the time-series plot (Example 2) to create a new sparkline plot."
+                ),
+                html.P(
+                    "View the values by hovering over data points in the sparkline plots."
+                ),
                 html.P(
                     "Selecting a sparkline will update the adjacent sub-plots with data curves for the specific product."
                 ),
             ],
             className="w3-container",
         ),
-        # Sparkline graphs
-        # html.Div(
-        #     [
-        #         dcc.Graph(
-        #             id="sparkline-group-plot",
-        #             config=dict(displayModeBar=False),
-        #             className="w3-panel",
-        #         ),
-        #     ]
-        # ),
+        # Create title line for the sparkline plots to identify the selected dataset
+        html.Div(
+            dcc.Markdown(
+                id="sparkline-selection-title",
+                className="w3-container w3-small",
+            ),
+        ),
         html.Div(
             [
                 dcc.Graph(
@@ -197,7 +217,7 @@ layout = html.Div(
         html.Div(className="w3-panel"),
         html.Div(
             [
-                html.H2("Step 4.  Create Cross-Filter Plots"),
+                html.H2("Example 4.  Create Cross-Filter Plots"),
                 html.P("Choose sensor data types to plot on the X and Y axes."),
                 html.P("Values are displayed by hovering over data points."),
                 html.P(
@@ -207,15 +227,13 @@ layout = html.Div(
             className="w3-container",
         ),
         # Cross-filter graphs
+        insertDropDownMenus("cross-filter"),
         html.Div(
             [
                 html.Div(
                     [
                         dcc.Dropdown(
                             id="crossfilter-xaxis-column",
-                            options=[
-                                {"label": i, "value": i} for i in available_indicators
-                            ],
                             value="Fuel Usage",
                             className="w3-text-black",
                         ),
@@ -235,9 +253,6 @@ layout = html.Div(
                     [
                         dcc.Dropdown(
                             id="crossfilter-yaxis-column",
-                            options=[
-                                {"label": i, "value": i} for i in available_indicators
-                            ],
                             value="Distance",
                             className="w3-text-black",
                         ),
@@ -262,13 +277,15 @@ layout = html.Div(
                     [
                         dcc.Graph(
                             id="crossfilter-indicator-scatter",
-                            hoverData={
-                                "points": [
-                                    {
-                                        "customdata": "Hollis & Hollis Group Inc (Clarksville, TN)"
-                                    }
-                                ]
-                            },
+                            clickData={"points": [{"customdata": [0]}]},
+                            hoverData={"points": [{"customdata": [0]}]},
+                            # hoverData={
+                            #     "points": [
+                            #         {
+                            #             "customdata": "Hollis & Hollis Group Inc (Clarksville, TN)"
+                            #         }
+                            #     ]
+                            # },
                         ),
                         dcc.Slider(
                             id="crossfilter-year--slider",
@@ -298,7 +315,7 @@ layout = html.Div(
         html.Div(className="w3-panel"),
         html.Div(
             [
-                html.H2("Step 5.  Parallel Categories Diagram"),
+                html.H2("Example 5.  Parallel Categories Diagram"),
                 html.P(
                     "The parallel categories diagram (also known as parallel sets or alluvial diagram) is a visualization of multi-dimensional categorical data sets. Each variable in the data set is represented by a column of rectangles, where each rectangle corresponds to a discrete value taken on by that variable. The relative heights of the rectangles reflect the relative frequency of occurrence of the corresponding value."
                 ),
@@ -306,7 +323,7 @@ layout = html.Div(
                     "Combinations of category rectangles across dimensions are connected by ribbons, where the height of the ribbon corresponds to the relative frequency of occurrence of the combination of categories in the data set."
                 ),
                 html.P(
-                    "Use the drop down filters to narrow your analysis based on product category, product, and company."
+                    "Use the drop down filters to tailor your analysis based on product category, product, and company."
                 ),
                 html.P(
                     "The plot will display the number of products matching the category values of product category, product, purchase type, and age.  The colors correspond to the product's age as shown in the legend."
@@ -317,46 +334,19 @@ layout = html.Div(
             ],
             className="w3-container",
         ),
-        html.Div(
-            html.Div(
-                [
-                    dcc.Dropdown(
-                        id="parallel-categories-product-category",
-                        value="Asphalt Paver",
-                        className="w3-text-black w3-padding w3-quarter",
-                    ),
-                    dcc.Dropdown(
-                        id="parallel-categories-product",
-                        value="All",
-                        className="w3-text-black w3-padding w3-quarter",
-                    ),
-                    dcc.Dropdown(
-                        id="parallel-categories-company",
-                        value="All",
-                        className="w3-text-black w3-padding w3-half",
-                    ),
-                ],
-                className="w3-row-padding",
-                # style={"display": "inline-block", "width": "30%"},
-            ),
-            style={
-                "borderTop": "thin lightgrey solid",
-                "backgroundColor": "rgb(250, 250, 250)",
-                "padding": "10px 5px",
-            },
-        ),
+        insertDropDownMenus("parallel-categories"),
         html.Div(
             [dcc.Graph(id="parallel-categories-plot")],
             className="w3-container w3-margin",
         ),
         html.Div(
             [
-                html.H2("Step 6.  Dataset Mapping"),
+                html.H2("Example 6.  Dataset Mapping"),
                 html.P(
                     "The map view shows the location of companies and their products as circles."
                 ),
                 html.P(
-                    "Use the drop down filters to narrow your analysis based on product category, product, and company."
+                    "Use the drop down filters to tailor your analysis based on product category, product, and company."
                 ),
                 html.P(
                     "The color of circle corresponds to the product type.  The size of the circle corresponds to the product age."
@@ -365,34 +355,7 @@ layout = html.Div(
             ],
             className="w3-container",
         ),
-        html.Div(
-            html.Div(
-                [
-                    dcc.Dropdown(
-                        id="map-category",
-                        value="Asphalt Paver",
-                        className="w3-text-black w3-padding w3-quarter",
-                    ),
-                    dcc.Dropdown(
-                        id="map-product",
-                        value="All",
-                        className="w3-text-black w3-padding w3-quarter",
-                    ),
-                    dcc.Dropdown(
-                        id="map-company",
-                        value="All",
-                        className="w3-text-black w3-padding w3-half",
-                    ),
-                ],
-                className="w3-row-padding",
-                # style={"display": "inline-block", "width": "30%"},
-            ),
-            style={
-                "borderTop": "thin lightgrey solid",
-                "backgroundColor": "rgb(250, 250, 250)",
-                "padding": "10px 5px",
-            },
-        ),
+        insertDropDownMenus("map"),
         html.Div(
             [dcc.Graph(id="map-plot")],
             className="w3-container w3-margin",

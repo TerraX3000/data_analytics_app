@@ -1,10 +1,30 @@
 import pandas as pd
 from dash.dependencies import Input
 from dash.dependencies import Output
+import dash_html_components as html
 import plotly.express as px
 import plotly.graph_objects as go
 import dash_table
 from .layout import df
+import datetime
+
+
+def setDropdownMenuCallbackOutputParameters(idPrefix):
+    callbackOutputParameters = [
+        Output(idPrefix + "-product-category", "options"),
+        Output(idPrefix + "-product", "options"),
+        Output(idPrefix + "-company", "options"),
+    ]
+    return callbackOutputParameters
+
+
+def setDropdownMenuCallbackInputParameters(idPrefix):
+    callbackInputParameters = [
+        Input(idPrefix + "-product-category", "value"),
+        Input(idPrefix + "-product", "value"),
+        Input(idPrefix + "-company", "value"),
+    ]
+    return callbackInputParameters
 
 
 def getDataFrameFilteredBy(productCategory, product, company):
@@ -21,12 +41,64 @@ def getDataFrameFilteredBy(productCategory, product, company):
 
 # Cross-filter plot
 def register_callbacks(app):
+    # Update the cross-filter x and y column choices based on available choices for the selected product
+    @app.callback(
+        [
+            Output("crossfilter-xaxis-column", "options"),
+            Output("crossfilter-yaxis-column", "options"),
+        ],
+        [
+            Input("cross-filter-product-category", "value"),
+            Input("cross-filter-product", "value"),
+            Input("cross-filter-company", "value"),
+        ],
+    )
+    def updateAvailableParameterOptions(
+        productCategory,
+        product,
+        company,
+    ):
+        print(
+            f"Running updateAvailableParameterOptions({productCategory}, {product}, {company})"
+        )
+        dff = getDataFrameFilteredBy(productCategory, product, company)
+        parameterOptions = dff["Parameter"].unique()
+        parameterOptions = [{"label": i, "value": i} for i in parameterOptions]
+        print("parameterOptions=", parameterOptions)
+        return [parameterOptions, parameterOptions]
+
+    # Update the multi-line plot variable choices based on available choices for the selected product
+    @app.callback(
+        [
+            Output("multi-line-plot-variable", "options"),
+        ],
+        [
+            Input("multi-line-product-category", "value"),
+            Input("multi-line-product", "value"),
+            Input("multi-line-company", "value"),
+        ],
+    )
+    def updateAvailableParameterOptionsMultiPlot(
+        productCategory,
+        product,
+        company,
+    ):
+        print(
+            f"Running updateAvailableParameterOptionsMultiPlot({productCategory}, {product}, {company})"
+        )
+        dff = getDataFrameFilteredBy(productCategory, product, company)
+        parameterOptions = dff["Parameter"].unique()
+        parameterOptions = [{"label": i, "value": i} for i in parameterOptions]
+        print("parameterOptions=", parameterOptions)
+        return [parameterOptions]
+
+    # Update cross-filter plot based on input values
     @app.callback(
         Output("crossfilter-indicator-scatter", "figure"),
         [
-            Input("table-product-category", "value"),
-            Input("table-product", "value"),
-            Input("table-company", "value"),
+            Input("cross-filter-product-category", "value"),
+            Input("cross-filter-product", "value"),
+            Input("cross-filter-company", "value"),
             Input("crossfilter-xaxis-column", "value"),
             Input("crossfilter-yaxis-column", "value"),
             Input("crossfilter-xaxis-type", "value"),
@@ -46,19 +118,38 @@ def register_callbacks(app):
     ):
         print("Running update_graph callback")
         dff = getDataFrameFilteredBy(productCategory, product, company)
-        dff = dff[dff["dayofyear"] == year_value]
+        # dff = dff[dff["dayofyear"] == year_value]
+        dff = dff.sort_values("dayofyear")
 
+        # Construct new dataframe ndf with the x-axis-column and y-axis-column as dataframe columns
+        ndf = (
+            dff[dff["Parameter"] == xaxis_column_name]
+            .reset_index()
+            .rename(columns={"Value": xaxis_column_name})
+        )
+        s1 = dff[dff["Parameter"] == yaxis_column_name]["Value"]
+        ds1 = (
+            s1.to_frame()
+            .reset_index()
+            .drop(columns=["index"])
+            .rename(columns={"Value": yaxis_column_name})
+        )
+        ndf = pd.concat([ndf, ds1], axis=1)
         fig = px.scatter(
-            x=dff[dff["Parameter"] == xaxis_column_name]["Value"],
-            y=dff[dff["Parameter"] == yaxis_column_name]["Value"],
-            hover_name=dff[dff["Parameter"] == yaxis_column_name]["Company"],
+            ndf,
+            x=xaxis_column_name,
+            y=yaxis_column_name,
+            animation_frame="dayofyear",
+            color="Product",
+            hover_name="Company",
+            hover_data=[
+                "Activity Group Id",
+                "Product Category",
+                "Product",
+                "VIN",
+                "Date",
+            ],
         )
-
-        fig.update_traces(
-            customdata=dff[dff["Parameter"] == yaxis_column_name]["Company"]
-        )
-
-        print("customdata = " + dff[dff["Parameter"] == yaxis_column_name]["Company"])
 
         fig.update_xaxes(
             title=xaxis_column_name, type="linear" if xaxis_type == "Linear" else "log"
@@ -71,6 +162,8 @@ def register_callbacks(app):
         fig.update_layout(
             margin={"l": 40, "b": 40, "t": 10, "r": 0}, hovermode="closest"
         )
+
+        fig["layout"].pop("updatemenus")  # optional, drop animation buttons
 
         return fig
 
@@ -102,61 +195,77 @@ def register_callbacks(app):
 
         return fig
 
+    # Update the x-time series plot for the cross-filter plot
     @app.callback(
         Output("x-time-series", "figure"),
         [
-            Input("crossfilter-indicator-scatter", "hoverData"),
+            Input("crossfilter-indicator-scatter", "clickData"),
             Input("crossfilter-xaxis-column", "value"),
             Input("crossfilter-xaxis-type", "value"),
         ],
     )
-    def update_y_timeseries(hoverData, xaxis_column_name, axis_type):
+    def update_x_timeseries(clickData, xaxis_column_name, axis_type):
         print("Running update_y_timeseries callback")
-        for key, value in hoverData.items():
+        productCategory = "All"
+        product = "All"
+        company = "All"
+        dff = getDataFrameFilteredBy(productCategory, product, company)
+        for key, value in clickData.items():
             print(key, value)
-        company_name = hoverData["points"][0]["customdata"]
-        dff = df[df["Company"] == company_name]
+        if "customdata" in clickData["points"][0]:
+            activityGroupId = clickData["points"][0]["customdata"][0]
+            print("activityGroupId found! " + str(activityGroupId))
+        else:
+            activityGroupId = 1
+        if "hovertext" in clickData["points"][0]:
+            company = clickData["points"][0]["hovertext"]
+            print("hovertext found! " + company)
+        else:
+            company = "Hollis & Hollis Group Inc (Clarksville, TN)"
         dff = dff[dff["Parameter"] == xaxis_column_name]
-        title = "<b>{}</b><br>{}".format(company_name, xaxis_column_name)
+        dff = dff[dff["Activity Group Id"] == activityGroupId]
+        title = "<b>{}</b><br>{}".format(company, xaxis_column_name)
         return create_time_series(dff, axis_type, title)
 
+    # Update the y-time series plot for the cross-filter plot
     @app.callback(
         Output("y-time-series", "figure"),
         [
-            Input("crossfilter-indicator-scatter", "hoverData"),
+            Input("crossfilter-indicator-scatter", "clickData"),
             Input("crossfilter-yaxis-column", "value"),
             Input("crossfilter-yaxis-type", "value"),
         ],
     )
-    def update_x_timeseries(hoverData, yaxis_column_name, axis_type):
+    def update_y_timeseries(clickData, yaxis_column_name, axis_type):
         print("Running update_x_timeseries callback")
-        dff = df[df["Company"] == hoverData["points"][0]["customdata"]]
+        productCategory = "All"
+        product = "All"
+        company = "All"
+        dff = getDataFrameFilteredBy(productCategory, product, company)
+        if "customdata" in clickData["points"][0]:
+            activityGroupId = clickData["points"][0]["customdata"][0]
+            print("activityGroupId found! " + str(activityGroupId))
+        else:
+            activityGroupId = 1
         dff = dff[dff["Parameter"] == yaxis_column_name]
+        dff = dff[dff["Activity Group Id"] == activityGroupId]
         return create_time_series(dff, axis_type, yaxis_column_name)
 
     # Multi-line plot
     @app.callback(
         Output("multi-line-plot", "figure"),
         [
-            Input("table-product-category", "value"),
-            Input("table-product", "value"),
-            Input("table-company", "value"),
+            Input("multi-line-product-category", "value"),
+            Input("multi-line-product", "value"),
+            Input("multi-line-company", "value"),
             Input("multi-line-plot-variable", "value"),
-            Input("sparkline-01-plot", "clickData"),
         ],
     )
-    def update_multi_line_plot(productCategory, product, company, variable, sparkline):
+    def update_multi_line_plot(productCategory, product, company, variable):
         print("Running update_multi_line_plot callback")
 
         dff = getDataFrameFilteredBy(productCategory, product, company)
-        if sparkline != None:
-            print("sparkline:", type(sparkline))
-            print("sparkline =", sparkline["points"][0]["customdata"][0])
-            df_multi_line = dff.loc[
-                df["Parameter"] == sparkline["points"][0]["customdata"][0]
-            ]
-        else:
-            df_multi_line = dff.loc[df["Parameter"] == variable]
+        df_multi_line = dff.loc[df["Parameter"] == variable]
         multi_line_fig = px.line(
             df_multi_line,
             x="Ops Time",
@@ -170,6 +279,7 @@ def register_callbacks(app):
                 "Description",
                 "VIN",
                 "Product Category",
+                "Product",
                 "Date",
             ],
         )
@@ -183,24 +293,25 @@ def register_callbacks(app):
         )
         return multi_line_fig
 
+    # Update the param-01 time-series plot for the multi-line plot
     @app.callback(
         Output("param-01-plot", "figure"),
         Input("multi-line-plot", "clickData"),
     )
-    def update_param_01_timeseries(hoverData):
+    def update_param_01_timeseries(clickData):
         print("Running update_param_01_timeseries callback")
-        for key, value in hoverData.items():
+        for key, value in clickData.items():
             print(key, value)
         for key, value in value[0].items():
             print(key, value)
 
-        if "customdata" in hoverData["points"][0]:
-            activityGroupId = hoverData["points"][0]["customdata"][0]
+        if "customdata" in clickData["points"][0]:
+            activityGroupId = clickData["points"][0]["customdata"][0]
             print("activityGroupId found! " + str(activityGroupId))
         else:
             activityGroupId = 1
-        if "hovertext" in hoverData["points"][0]:
-            company = hoverData["points"][0]["hovertext"]
+        if "hovertext" in clickData["points"][0]:
+            company = clickData["points"][0]["hovertext"]
             print("hovertext found! " + company)
         else:
             company = "Hollis & Hollis Group Inc (Clarksville, TN)"
@@ -210,19 +321,20 @@ def register_callbacks(app):
         title = "<b>{}</b><br>{}".format(company, "Fuel Usage")
         return create_time_series(dff, "Linear", title)
 
+    # Update the param-02 time-series plot for the multi-line plot
     @app.callback(
         Output("param-02-plot", "figure"),
         [Input("multi-line-plot", "clickData")],
     )
-    def update_param_02_timeseries(hoverData):
+    def update_param_02_timeseries(clickData):
         print("Running update_param_02_timeseries callback")
-        if "customdata" in hoverData["points"][0]:
-            activityGroupId = hoverData["points"][0]["customdata"][0]
+        if "customdata" in clickData["points"][0]:
+            activityGroupId = clickData["points"][0]["customdata"][0]
             print("activityGroupId found! " + str(activityGroupId))
         else:
             activityGroupId = 1
-        if "hovertext" in hoverData["points"][0]:
-            company = hoverData["points"][0]["hovertext"]
+        if "hovertext" in clickData["points"][0]:
+            company = clickData["points"][0]["hovertext"]
             print("hovertext found! " + company)
         else:
             company = "Hollis & Hollis Group Inc (Clarksville, TN)"
@@ -231,9 +343,27 @@ def register_callbacks(app):
         dff = dff[dff["Activity Group Id"] == activityGroupId]
         return create_time_series(dff, "Linear", "Distance")
 
-    def create_sparkline_plot(activityGroupId, title):
-        print("Running create_sparkline_plot()")
+    def create_sparkline_plot(activityGroupId, sensorCategory, title):
+        print("Running create_sparkline_plot() for", sensorCategory)
         dff = df[df["Activity Group Id"] == activityGroupId]
+        dff = dff[dff["Sensor Category"] == sensorCategory]
+
+        # Create a blank figure and hide the graph if the sensor category is not in the dataframe
+        if len(dff) == 0:
+            className = "w3-cell w3-hide"
+            print("No data found. Setting className=" + className)
+            nodataDf = pd.DataFrame(
+                {
+                    "Ops Time": [0],
+                    "Value": [0],
+                    "Parameter": ["NA"],
+                }
+            )
+            fig = px.line(nodataDf, x="Ops Time", y="Value", color="Parameter")
+            return fig, className
+        else:
+            className = "w3-cell"
+            print("Data found. Setting className=" + className)
 
         fig = px.line(
             dff,
@@ -241,13 +371,23 @@ def register_callbacks(app):
             y="Value",
             facet_row="Parameter",
             color="Parameter",
-            facet_row_spacing=0.1,
-            height=100,
-            width=200,
+            labels={"Parameter": ""},
+            facet_row_spacing=0.05,
+            height=110,
+            width=300,
             hover_data=[
                 "Parameter",
             ],
         )
+
+        # hide and lock down axes
+        fig.update_xaxes(visible=False, fixedrange=True)
+        fig.update_yaxes(visible=False, fixedrange=True)
+
+        # remove facet/subplot labels
+        fig.update_layout(annotations=[], overwrite=True)
+
+        # Add sparkline title
         fig.add_annotation(
             x=0,
             y=0.95,
@@ -261,193 +401,158 @@ def register_callbacks(app):
             text=title,
         )
 
-        # hide and lock down axes
-        fig.update_xaxes(visible=False, fixedrange=True)
-        fig.update_yaxes(visible=False, fixedrange=True)
-
-        # remove facet/subplot labels
-        # fig.update_layout(annotations=[], overwrite=True)
-        fig.update_layout(overwrite=True)
-
         # strip down the rest of the plot
         fig.update_layout(
-            showlegend=False,
+            showlegend=True,  # Include legend for easy identification of parameters
             plot_bgcolor="white",
             margin=dict(t=10, l=10, b=10, r=10),
         )
 
-        return fig
+        fig.update_layout(legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.99))
 
-    # Sparkline plots
-    # @app.callback(
-    #     Output("sparkline-group-plot", "figure"),
-    #     Input("multi-line-plot", "hoverData"),
-    # )
-    # def update_sparkline_group(hoverData):
-    #     print("Running sparkline-group callback")
-    #     for key, value in hoverData.items():
-    #         print(key, value)
-    #     for key, value in value[0].items():
-    #         print(key, value)
+        return fig, className
 
-    #     if "customdata" in hoverData["points"][0]:
-    #         activityGroupId = hoverData["points"][0]["customdata"][0]
-    #         print("activityGroupId found! " + str(activityGroupId))
-    #     else:
-    #         activityGroupId = 1
-    #     if "hovertext" in hoverData["points"][0]:
-    #         company = hoverData["points"][0]["hovertext"]
-    #         print("hovertext found! " + company)
-    #     else:
-    #         company = "Hollis & Hollis Group Inc (Clarksville, TN)"
-    #     title = "Sparkline_Group"
-    #     print("Running create_sparkline_plot()")
-    #     dff = df[df["Activity Group Id"] == activityGroupId]
-
-    #     fig = px.line(
-    #         dff,
-    #         x="Ops Time",
-    #         y="Value",
-    #         facet_col="Sensor Category",
-    #         # facet_row="Parameter",
-    #         color="Parameter",
-    #         facet_col_wrap=4,
-    #         facet_col_spacing=0.04,
-    #         facet_row_spacing=0.1,
-    #         height=100,
-    #         width=200,
-    #         hover_data=[
-    #             "Parameter",
-    #         ],
-    #     )
-    #     fig.add_annotation(
-    #         x=0,
-    #         y=0.95,
-    #         xanchor="left",
-    #         yanchor="bottom",
-    #         xref="paper",
-    #         yref="paper",
-    #         showarrow=False,
-    #         align="left",
-    #         bgcolor="rgba(255, 255, 255, 0.5)",
-    #         text=title,
-    #     )
-
-    #     # hide and lock down axes
-    #     fig.update_xaxes(visible=False, fixedrange=True)
-    #     fig.update_yaxes(visible=False, fixedrange=True)
-
-    #     # remove facet/subplot labels
-    #     # fig.update_layout(annotations=[], overwrite=True)
-    #     # fig.update_layout(overwrite=True)
-
-    #     # strip down the rest of the plot
-    #     fig.update_layout(
-    #         showlegend=False,
-    #         plot_bgcolor="white",
-    #         margin=dict(t=10, l=10, b=10, r=10),
-    #     )
-
-    #     return fig
-
+    # Create sparkline title for sparkline plots
     @app.callback(
-        Output("sparkline-01-plot", "figure"),
-        Input("multi-line-plot", "hoverData"),
+        Output("sparkline-selection-title", "children"),
+        Input("multi-line-plot", "clickData"),
     )
-    def update_sparkline_01(hoverData):
+    def update_SparklineTitle(clickData):
+        print("Running update_SparklineTitle() callback")
+        if "customdata" in clickData["points"][0]:
+            activityGroupId = clickData["points"][0]["customdata"][0]
+            productCategory = clickData["points"][0]["customdata"][4]
+            product = clickData["points"][0]["customdata"][5]
+            date = clickData["points"][0]["customdata"][6]
+            date = datetime.datetime.strptime(date, "%Y-%m-%dT%H:%M:%S")
+            print("activityGroupId found! " + str(activityGroupId))
+        else:
+            activityGroupId = 1
+        if "hovertext" in clickData["points"][0]:
+            company = clickData["points"][0]["hovertext"]
+            print("hovertext found! " + company)
+        else:
+            company = "Hollis & Hollis Group Inc (Clarksville, TN)"
+
+        title = f"**Product Category:** {productCategory} **Product:** {product} **Activity Group Id:** {activityGroupId} **Date:** {date:%Y-%m-%d} **Company:** {company}"
+        return title
+
+    # Create sparkline plots
+    @app.callback(
+        [
+            Output("sparkline-01-plot", "figure"),
+            Output("sparkline-01-plot", "className"),
+        ],
+        Input("multi-line-plot", "clickData"),
+    )
+    def update_sparkline_01(clickData):
         print("Running sparkline-01 callback")
-        for key, value in hoverData.items():
+        for key, value in clickData.items():
             print(key, value)
         for key, value in value[0].items():
             print(key, value)
 
-        if "customdata" in hoverData["points"][0]:
-            activityGroupId = hoverData["points"][0]["customdata"][0]
+        if "customdata" in clickData["points"][0]:
+            activityGroupId = clickData["points"][0]["customdata"][0]
             print("activityGroupId found! " + str(activityGroupId))
         else:
             activityGroupId = 1
-        if "hovertext" in hoverData["points"][0]:
-            company = hoverData["points"][0]["hovertext"]
+        if "hovertext" in clickData["points"][0]:
+            company = clickData["points"][0]["hovertext"]
             print("hovertext found! " + company)
         else:
             company = "Hollis & Hollis Group Inc (Clarksville, TN)"
-        title = "Sparkline_01"
-        return create_sparkline_plot(activityGroupId, title)
+        sensorCategory = "Engine"
+        title = "Engine"
+        return create_sparkline_plot(activityGroupId, sensorCategory, title)
 
     @app.callback(
-        Output("sparkline-02-plot", "figure"),
-        Input("multi-line-plot", "hoverData"),
+        [
+            Output("sparkline-02-plot", "figure"),
+            Output("sparkline-02-plot", "className"),
+        ],
+        Input("multi-line-plot", "clickData"),
     )
-    def update_sparkline_02(hoverData):
+    def update_sparkline_02(clickData):
         print("Running sparkline-02 callback")
-        for key, value in hoverData.items():
+        for key, value in clickData.items():
             print(key, value)
         for key, value in value[0].items():
             print(key, value)
 
-        if "customdata" in hoverData["points"][0]:
-            activityGroupId = hoverData["points"][0]["customdata"][0]
+        if "customdata" in clickData["points"][0]:
+            activityGroupId = clickData["points"][0]["customdata"][0]
             print("activityGroupId found! " + str(activityGroupId))
         else:
             activityGroupId = 1
-        if "hovertext" in hoverData["points"][0]:
-            company = hoverData["points"][0]["hovertext"]
+        if "hovertext" in clickData["points"][0]:
+            company = clickData["points"][0]["hovertext"]
             print("hovertext found! " + company)
         else:
             company = "Hollis & Hollis Group Inc (Clarksville, TN)"
-        title = "Sparkline_02"
-        return create_sparkline_plot(activityGroupId, title)
+        sensorCategory = "GPS"
+        title = "GPS"
+        return create_sparkline_plot(activityGroupId, sensorCategory, title)
 
     @app.callback(
-        Output("sparkline-03-plot", "figure"),
-        Input("multi-line-plot", "hoverData"),
+        [
+            Output("sparkline-03-plot", "figure"),
+            Output("sparkline-03-plot", "className"),
+        ],
+        Input("multi-line-plot", "clickData"),
     )
-    def update_sparkline_03(hoverData):
+    def update_sparkline_03(clickData):
         print("Running sparkline-03 callback")
-        for key, value in hoverData.items():
+        for key, value in clickData.items():
             print(key, value)
         for key, value in value[0].items():
             print(key, value)
 
-        if "customdata" in hoverData["points"][0]:
-            activityGroupId = hoverData["points"][0]["customdata"][0]
+        if "customdata" in clickData["points"][0]:
+            activityGroupId = clickData["points"][0]["customdata"][0]
             print("activityGroupId found! " + str(activityGroupId))
         else:
             activityGroupId = 1
-        if "hovertext" in hoverData["points"][0]:
-            company = hoverData["points"][0]["hovertext"]
+        if "hovertext" in clickData["points"][0]:
+            company = clickData["points"][0]["hovertext"]
             print("hovertext found! " + company)
         else:
             company = "Hollis & Hollis Group Inc (Clarksville, TN)"
-        title = "Sparkline_03"
-        return create_sparkline_plot(activityGroupId, title)
+        sensorCategory = "Screed"
+        title = "Screed"
+        return create_sparkline_plot(activityGroupId, sensorCategory, title)
 
     @app.callback(
-        Output("sparkline-04-plot", "figure"),
-        Input("multi-line-plot", "hoverData"),
+        [
+            Output("sparkline-04-plot", "figure"),
+            Output("sparkline-04-plot", "className"),
+        ],
+        Input("multi-line-plot", "clickData"),
     )
-    def update_sparkline_04(hoverData):
-        print("Running sparkline-03 callback")
-        for key, value in hoverData.items():
+    def update_sparkline_04(clickData):
+        print("Running sparkline-04 callback")
+        for key, value in clickData.items():
             print(key, value)
         for key, value in value[0].items():
             print(key, value)
 
-        if "customdata" in hoverData["points"][0]:
-            activityGroupId = hoverData["points"][0]["customdata"][0]
+        if "customdata" in clickData["points"][0]:
+            activityGroupId = clickData["points"][0]["customdata"][0]
             print("activityGroupId found! " + str(activityGroupId))
         else:
             activityGroupId = 1
-        if "hovertext" in hoverData["points"][0]:
-            company = hoverData["points"][0]["hovertext"]
+        if "hovertext" in clickData["points"][0]:
+            company = clickData["points"][0]["hovertext"]
             print("hovertext found! " + company)
         else:
             company = "Hollis & Hollis Group Inc (Clarksville, TN)"
-        title = "Sparkline_04"
-        return create_sparkline_plot(activityGroupId, title)
+        sensorCategory = "Engine"
+        title = "Engine2"
+        return create_sparkline_plot(activityGroupId, sensorCategory, title)
 
+    # Dynamically update the dropdown choices based on the other dropdown selections
     def updateDropDownOptions(productCategory, product, company):
-        print("Running updateDropdownOptionsForCompanyProductTable callback")
+        print("Running updateDropDownOptions()")
         dff = getDataFrameFilteredBy(productCategory, product, company)
 
         # Use df to include all product categories in the drop down list
@@ -477,16 +582,8 @@ def register_callbacks(app):
 
     # Update dropdown menus for Company-product Table
     @app.callback(
-        [
-            Output("parallel-categories-product-category", "options"),
-            Output("parallel-categories-product", "options"),
-            Output("parallel-categories-company", "options"),
-        ],
-        [
-            Input("parallel-categories-product-category", "value"),
-            Input("parallel-categories-product", "value"),
-            Input("parallel-categories-company", "value"),
-        ],
+        setDropdownMenuCallbackOutputParameters("parallel-categories"),
+        setDropdownMenuCallbackInputParameters("parallel-categories"),
     )
     def updateDropdownOptionsForParallelCategoriesPlot(
         productCategory, product, company
@@ -495,34 +592,32 @@ def register_callbacks(app):
 
     # Update dropdown menus for Company-product Table
     @app.callback(
-        [
-            Output("table-product-category", "options"),
-            Output("table-product", "options"),
-            Output("table-company", "options"),
-        ],
-        [
-            Input("table-product-category", "value"),
-            Input("table-product", "value"),
-            Input("table-company", "value"),
-        ],
+        setDropdownMenuCallbackOutputParameters("table"),
+        setDropdownMenuCallbackInputParameters("table"),
     )
     def updateDropdownOptionsForCompanyProductTable(productCategory, product, company):
         return updateDropDownOptions(productCategory, product, company)
 
     # Update dropdown menus for map
     @app.callback(
-        [
-            Output("map-category", "options"),
-            Output("map-product", "options"),
-            Output("map-company", "options"),
-        ],
-        [
-            Input("map-category", "value"),
-            Input("map-product", "value"),
-            Input("map-company", "value"),
-        ],
+        setDropdownMenuCallbackOutputParameters("map"),
+        setDropdownMenuCallbackInputParameters("map"),
     )
     def updateDropdownOptionsForMapPlot(productCategory, product, company):
+        return updateDropDownOptions(productCategory, product, company)
+
+    @app.callback(
+        setDropdownMenuCallbackOutputParameters("multi-line"),
+        setDropdownMenuCallbackInputParameters("multi-line"),
+    )
+    def updateDropdownOptionsForMultiLinePlot(productCategory, product, company):
+        return updateDropDownOptions(productCategory, product, company)
+
+    @app.callback(
+        setDropdownMenuCallbackOutputParameters("cross-filter"),
+        setDropdownMenuCallbackInputParameters("cross-filter"),
+    )
+    def updateDropdownOptionsForCrossFilterPlot(productCategory, product, company):
         return updateDropDownOptions(productCategory, product, company)
 
     # Company-Product Table
@@ -569,6 +664,7 @@ def register_callbacks(app):
 
         return fig
 
+    # Update the data table
     @app.callback(
         [Output("table", "columns"), Output("table", "data")],
         [
@@ -593,6 +689,7 @@ def register_callbacks(app):
         data = dff.to_dict("records")
         return [columns, data]
 
+    # Update the parallel categories plot based on the dropdown selections
     @app.callback(
         Output("parallel-categories-plot", "figure"),
         [
@@ -620,7 +717,7 @@ def register_callbacks(app):
     @app.callback(
         Output("map-plot", "figure"),
         [
-            Input("map-category", "value"),
+            Input("map-product-category", "value"),
             Input("map-product", "value"),
             Input("map-company", "value"),
         ],
