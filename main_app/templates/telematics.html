@@ -9,7 +9,7 @@
 
 <div class="w3-container">
     <h5><b>Overview</b></h5>
-    <p>The Telematics Analysis Demo is intended to support these objectives:</p>
+    <p>The Telematics Analysis Demo supports these objectives:</p>
     <ul>
         <li>Display methods to visualize relevant data types expected in Roadtec telematics data</li>
         <li>Show the ability to understand Roadtec's product portfolio and apply it in useful ways</li>
@@ -20,7 +20,7 @@
 </div>
 
 <div class="w3-panel">
-    <h3> Clicking on the example below will direct you to the interactive Telematics Analysis Demo </h3>
+    <h3> Clicking on the example below will take you to the interactive Telematics Analysis Demo </h3>
 </div>
 
 <div class="w3-row-padding">
@@ -43,14 +43,15 @@
 <div class="w3-panel"></div>
 
 <div class="w3-container">
+    <h5><b>Technical Overview</b></h5>
     </p>
     <h5><b>Analysis and Visualization Examples</b></h5>
-    <p>The Telematics Analysis Demo utilizes many types of analysis and visualization methods including:</p>
+    <p>The Telematics Analysis Demo utilizes several types of analysis and visualization methods including:</p>
     <ul>
         <li>Tabular data lists</li>
         <li>Time series plots</li>
         <li>Cross-filtering plots</li>
-        <li>Categorical data analyis</li>
+        <li>Categorical data analysis</li>
         <li>Geospatial visualization</li>
     </ul>
 
@@ -64,16 +65,21 @@
         <li>Corporate data (e.g., customer names, purchase type, product age, etc.)</li>
         <li>Date, time, and geospatial data</li>
     </ul>
-    <p>The dataset was created using a Python script and used random distributions to generate realistic data sets.</p>
-    <h5><b>Description of Coding and Database Utilization</b></h5>
+    <p>The dataset was created using a Python script and used random distributions to generate representative data sets.
+    </p>
+    <h5><b>Coding and Database Functions</b></h5>
     <p>The Telematics Analysis Demo is built on the Data Analytics app as described <a href="/">on the home page</a>.
         Specific details are described below:</p>
     <ul>
         <li>Coding Language. The visualizations are implemented with the Plotly Dash module designed for Python.</li>
-        <li>Database. The simulated data was generated as a CSV file with a Python script. The CSV file was uploaded to
-            the MySQL database using the Pandas module.</li>
+        <li>Database. The simulated data is stored in the MySQL database which supports the Data Analytics app. The
+            simulated data was generated as a CSV file with a Python script. The CSV file was uploaded to
+            the MySQL database using the Dataset Manager function of the Data Analytics app. The Dataset Manager uses
+            the
+            Pandas module to upload CSV data into a new database table in the MySQL database.</li>
         <li>Data Conditioning. The Pandas module for Python is used to read the data from the MySQL database. Pandas
-            functions are then used to transform the data as needed for the Plotly graphs.</li>
+            functions are then used to transform the data as needed for the Plotly graphs to include simple parsing of
+            dates and more complex filtering operations on dataframes.</li>
     </ul>
     <p> All source code is available on GitHub at <a target="_blank"
             href="https://github.com/TerraX3000/data_analytics_app">
