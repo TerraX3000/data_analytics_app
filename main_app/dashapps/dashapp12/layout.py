@@ -12,7 +12,7 @@ external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
 
 print("Initializing layout for telematics")
 try:
-    df = pd.read_sql_table("dataset_Telematics_Data_6", db.engine, parse_dates=["Date"])
+    df = pd.read_sql_table("dataset_Telematics_Data_7", db.engine, parse_dates=["Date"])
     print("Using telematics file from MySQL database")
 except:
     df = pd.read_csv(
@@ -51,13 +51,11 @@ def insertDropDownMenus(idPrefix):
                     className="w3-text-black w3-padding w3-half",
                 ),
             ],
-            className="w3-row-padding",
+            className="w3-row-padding w3-light-gray",
             # style={"display": "inline-block", "width": "30%"},
         ),
         style={
             "borderTop": "thin lightgrey solid",
-            "backgroundColor": "rgb(250, 250, 250)",
-            "padding": "10px 5px",
         },
     )
     return dropDownSelections
@@ -81,11 +79,6 @@ layout = html.Div(
         ),
         # Table
         insertDropDownMenus("table"),
-        # html.Div(
-        #     [
-        #         dcc.Graph(id="company-equipment-table"),
-        #     ]
-        # ),
         html.Div(
             [
                 html.Div(
@@ -140,8 +133,22 @@ layout = html.Div(
                     value="Fuel Usage",
                     className="w3-text-black w3-padding w3-quarter",
                 ),
+                html.P(
+                    " ",
+                    className="w3-text-black w3-padding w3-quarter",
+                ),
+                dcc.Dropdown(
+                    id="multi-line-subplot-1-variable",
+                    value="Speed",
+                    className="w3-text-black w3-padding w3-quarter",
+                ),
+                dcc.Dropdown(
+                    id="multi-line-subplot-2-variable",
+                    value="Distance",
+                    className="w3-text-black w3-padding w3-quarter",
+                ),
             ],
-            className="w3-row-padding",
+            className="w3-row-padding w3-light-gray",
         ),
         html.Div(
             [
@@ -159,11 +166,6 @@ layout = html.Div(
             ],
             className="w3-row-padding",
         ),
-        # html.Div(
-        #     [dcc.Graph(id="param-01-plot"), dcc.Graph(id="param-02-plot")],
-        #     # style={"display": "inline-block", "width": "51%"},
-        #     className="w3-half",
-        # ),
         html.Div(
             [
                 html.H2("Example 3.  View Sparkline Plots for Sensor Categories"),
@@ -171,13 +173,10 @@ layout = html.Div(
                     "Sparkline plots show trending data for different sensor categories."
                 ),
                 html.P(
-                    "Click on a line in the time-series plot (Example 2) to create a new sparkline plot."
+                    "Click on a line in the sensor time-series plot (Example 2) to create a new sparkline plot."
                 ),
                 html.P(
                     "View the values by hovering over data points in the sparkline plots."
-                ),
-                html.P(
-                    "Selecting a sparkline will update the adjacent sub-plots with data curves for the specific product."
                 ),
             ],
             className="w3-container",
@@ -212,7 +211,7 @@ layout = html.Div(
                     className="w3-cell",
                 ),
             ],
-            className="w3-cell-row",
+            className="w3-cell-row w3-container w3-light-gray",
         ),
         html.Div(className="w3-panel"),
         html.Div(
@@ -221,7 +220,10 @@ layout = html.Div(
                 html.P("Choose sensor data types to plot on the X and Y axes."),
                 html.P("Values are displayed by hovering over data points."),
                 html.P(
-                    "Selecting a data point will update the adjacent sub-plots with data curves for the specific product."
+                    "Selecting a data point will update the adjacent sub-plots with data curves for the selected activity."
+                ),
+                html.P(
+                    "Dragging the time slider will display results for the selected day."
                 ),
             ],
             className="w3-container",
@@ -237,17 +239,17 @@ layout = html.Div(
                             value="Fuel Usage",
                             className="w3-text-black",
                         ),
-                        dcc.RadioItems(
-                            id="crossfilter-xaxis-type",
-                            options=[
-                                {"label": i, "value": i} for i in ["Linear", "Log"]
-                            ],
-                            value="Linear",
-                            labelStyle={"display": "inline-block"},
-                            className="w3-padding",
-                        ),
+                        # dcc.RadioItems(
+                        #     id="crossfilter-xaxis-type",
+                        #     options=[
+                        #         {"label": i, "value": i} for i in ["Linear", "Log"]
+                        #     ],
+                        #     value="Linear",
+                        #     labelStyle={"display": "inline-block"},
+                        #     className="w3-padding",
+                        # ),
                     ],
-                    className="w3-half w3-padding-16",
+                    className="w3-quarter w3-padding",
                 ),
                 html.Div(
                     [
@@ -256,20 +258,20 @@ layout = html.Div(
                             value="Distance",
                             className="w3-text-black",
                         ),
-                        dcc.RadioItems(
-                            id="crossfilter-yaxis-type",
-                            options=[
-                                {"label": i, "value": i} for i in ["Linear", "Log"]
-                            ],
-                            value="Linear",
-                            labelStyle={"display": "inline-block"},
-                            className="w3-padding",
-                        ),
+                        # dcc.RadioItems(
+                        #     id="crossfilter-yaxis-type",
+                        #     options=[
+                        #         {"label": i, "value": i} for i in ["Linear", "Log"]
+                        #     ],
+                        #     value="Linear",
+                        #     labelStyle={"display": "inline-block"},
+                        #     className="w3-padding",
+                        # ),
                     ],
-                    className="w3-half w3-padding-16",
+                    className="w3-quarter w3-padding",
                 ),
             ],
-            className="w3-row-padding w3-panel w3-light-gray",
+            className="w3-row-padding w3-light-gray",
         ),
         html.Div(
             [
@@ -279,25 +281,6 @@ layout = html.Div(
                             id="crossfilter-indicator-scatter",
                             clickData={"points": [{"customdata": [0]}]},
                             hoverData={"points": [{"customdata": [0]}]},
-                            # hoverData={
-                            #     "points": [
-                            #         {
-                            #             "customdata": "Hollis & Hollis Group Inc (Clarksville, TN)"
-                            #         }
-                            #     ]
-                            # },
-                        ),
-                        dcc.Slider(
-                            id="crossfilter-year--slider",
-                            min=df["dayofyear"].min(),
-                            max=df["dayofyear"].max(),
-                            value=df["dayofyear"].max(),
-                            marks={
-                                str(dayofyear): str(dayofyear)
-                                for dayofyear in df["dayofyear"].unique()
-                            },
-                            step=None,
-                            className="w3-margin-left",
                         ),
                     ],
                     className="w3-half",
