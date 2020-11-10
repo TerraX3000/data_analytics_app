@@ -15,6 +15,7 @@ datasetManager_bp = Blueprint("datasetManager_bp", __name__)
 
 @datasetManager_bp.route("/datasetmanager", methods=["GET", "POST"])
 def display_datasetManager():
+    printLogEntry("Running display_datasetManager()")
     uploadDatasetFormDetails = uploadDatasetForm()
 
     datasets = DatasetManager.query.all()
@@ -51,6 +52,7 @@ def display_datasetManager():
 
 @datasetManager_bp.route("/datasetmanager/<int:log_id>/delete", methods=["POST"])
 def delete_Dataset(log_id):
+    printLogEntry("Running delete_Dataset()")
 
     log = DatasetManager.query.get_or_404(log_id)
     LogDetails = f"{(log_id)} {log.datasetName}"

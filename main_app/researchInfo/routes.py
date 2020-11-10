@@ -10,6 +10,7 @@ researchInfo_bp = Blueprint("researchInfo_bp", __name__)
 
 @researchInfo_bp.route("/researchinfo", methods=["GET", "POST"])
 def display_researchInfo():
+    printLogEntry("Running display_researchInfo()")
     addResearchInfoFormDetails = addResearchInfoForm()
 
     researchInfoLogs = ResearchInfo.query.order_by(
@@ -43,6 +44,7 @@ def display_researchInfo():
 
 @researchInfo_bp.route("/researchinfo/<int:log_id>/delete", methods=["POST"])
 def delete_Resource(log_id):
+    printLogEntry("Running delete_Resource()")
 
     log = ResearchInfo.query.get_or_404(log_id)
     LogDetails = f"{(log_id)} {log.title}"

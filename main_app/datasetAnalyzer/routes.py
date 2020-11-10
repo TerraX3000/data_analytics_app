@@ -28,6 +28,7 @@ datasetAnalyzer_bp = Blueprint("datasetAnalyzer_bp", __name__)
 
 @datasetAnalyzer_bp.route("/datasetanalyzer", methods=["GET", "POST"])
 def display_datasetAnalyzer():
+    printLogEntry("Running display_datasetAnalyzer()")
     selectDatasetToAnalzerFormDetails = selectDatasetToAnalyzeForm()
     selectDatasetToAnalzerFormDetails.datasetName.choices = getDatasetNames()
     selectColumnToAnalyzeFormDetails = selectColumnToAnalyzeForm()
