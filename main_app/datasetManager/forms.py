@@ -17,7 +17,7 @@ class uploadDatasetForm(FlaskForm):
     datasetName = StringField("Dataset Name", validators=[DataRequired()])
     comment = StringField("Comment (Optional)", validators=[Optional()])
     csvDatasetFile = FileField(
-        "Dataset File (*.csv format)",
-        validators=[FileAllowed(["csv"]), FileRequired()],
+        "Dataset File (*.csv format or *.csv.zip format)",
+        validators=[FileAllowed(["csv", "zip"]), FileRequired()],
     )
     submitUploadDataset = SubmitField("Upload Dataset")

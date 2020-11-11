@@ -7,11 +7,20 @@ from sqlalchemy.ext.declarative import declarative_base
 from main_app import db
 from main_app.models import DatasetManager
 from main_app.main.utilityfunctions import printLogEntry
+from zipfile import ZipFile
 
 
-def uploadDataset(datasetName, csvFile, comment):
+def uploadDataset(datasetName, csvFile, comment, ziptest):
     printLogEntry("Running uploadDataset()")
-    df = pd.read_csv(csvFile)
+    # if the file is a zipped csv file, use ZipFile to open it and select the first zipped file to read with pd
+    if ziptest:
+        zip_file = ZipFile(csvFile)
+        print("zip info:", zip_file.infolist()[0].filename)
+        df = pd.read_csv(zip_file.open(zip_file.infolist()[0].filename))
+        # See explanation for ZipFile at https://stackoverflow.com/questions/44575251/reading-multiple-files-contained-in-a-zip-file-with-pandas
+    # If the file is a CSV file, read it directly with pd
+    else:
+        df = pd.read_csv(csvFile)
     datasetSqlName = "dataset_" + str.replace(datasetName, " ", "_")
     newDataset = DatasetManager(
         datasetName=datasetName, datasetSqlName=datasetSqlName, comment=comment

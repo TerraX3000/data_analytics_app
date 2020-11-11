@@ -1,4 +1,5 @@
 from flask import render_template, redirect, url_for, flash, request, Blueprint
+import re
 from alembic import op
 from main_app import db
 from main_app.models import DatasetManager
@@ -28,13 +29,29 @@ def display_datasetManager():
             if uploadDatasetFormDetails.validate_on_submit():
                 printLogEntry("Upload Dataset Form Submitted")
                 if uploadDatasetFormDetails.csvDatasetFile.data:
-                    uploadedDatasetFile = save_File(
-                        uploadDatasetFormDetails.csvDatasetFile.data,
-                        "Uploaded_Dataset_File.csv",
-                    )
+                    # print("file=", uploadDatasetFormDetails.csvDatasetFile.data)
+                    # print("dir=", dir(uploadDatasetFormDetails.csvDatasetFile.data))
+                    # print(
+                    #     "fname=",
+                    #     uploadDatasetFormDetails.csvDatasetFile.data.filename,
+                    # )
+                    fname = uploadDatasetFormDetails.csvDatasetFile.data.filename
+                    ziptest = re.findall(".zip$", fname)
+                    # print("ziptest=", ziptest)
+                    if ziptest:
+                        print("Zip file uploaded:", fname)
+                        uploadedDatasetFile = save_File(
+                            uploadDatasetFormDetails.csvDatasetFile.data,
+                            "Uploaded_Dataset_File.csv.zip",
+                        )
+                    else:
+                        uploadedDatasetFile = save_File(
+                            uploadDatasetFormDetails.csvDatasetFile.data,
+                            "Uploaded_Dataset_File.csv",
+                        )
                     datasetName = uploadDatasetFormDetails.datasetName.data
                     comment = uploadDatasetFormDetails.comment.data
-                    uploadDataset(datasetName, uploadedDatasetFile, comment)
+                    uploadDataset(datasetName, uploadedDatasetFile, comment, ziptest)
 
                     return redirect(url_for("datasetManager_bp.display_datasetManager"))
     except:
