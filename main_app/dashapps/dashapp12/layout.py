@@ -12,7 +12,7 @@ external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
 
 print("Initializing layout for telematics")
 try:
-    df = pd.read_sql_table("dataset_Telematics_Data_7", db.engine, parse_dates=["Date"])
+    df = pd.read_sql_table("dataset_Telematics_Data_8", db.engine, parse_dates=["Date"])
     print("Using telematics file from MySQL database")
 except:
     df = pd.read_csv(
@@ -65,8 +65,12 @@ layout = html.Div(
     [
         html.Div(
             [
-                html.H1("Data Analysis and Trending"),
-                html.P("Perform simple data analysis on simulated telematics data"),
+                html.H1("Data Analysis and Trending Examples"),
+                html.P(
+                    "Purpose: Perform simple data analysis on simulated telematics data"
+                ),
+                html.P("Note: Large datasets may take a moment to load"),
+                html.P("Note: Use Google Chrome for best results"),
                 html.H2("Example 1.  Data Set Review"),
                 html.P(
                     "Use the drop down filters to tailor your analysis based on product category, product, and company."
@@ -139,12 +143,12 @@ layout = html.Div(
                 ),
                 dcc.Dropdown(
                     id="multi-line-subplot-1-variable",
-                    value="Speed",
+                    value="Distance",
                     className="w3-text-black w3-padding w3-quarter",
                 ),
                 dcc.Dropdown(
                     id="multi-line-subplot-2-variable",
-                    value="Distance",
+                    value="Speed",
                     className="w3-text-black w3-padding w3-quarter",
                 ),
             ],
@@ -236,7 +240,7 @@ layout = html.Div(
                     [
                         dcc.Dropdown(
                             id="crossfilter-xaxis-column",
-                            value="Fuel Usage",
+                            value="Panel 1 Temp",
                             className="w3-text-black",
                         ),
                         # dcc.RadioItems(
@@ -255,7 +259,7 @@ layout = html.Div(
                     [
                         dcc.Dropdown(
                             id="crossfilter-yaxis-column",
-                            value="Distance",
+                            value="Panel 2 Temp",
                             className="w3-text-black",
                         ),
                         # dcc.RadioItems(

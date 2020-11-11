@@ -126,7 +126,7 @@ def register_callbacks(app):
     ):
         print("Running update_graph callback")
         dff = getDataFrameFilteredBy(productCategory, product, company)
-        dff = dff.sort_values("dayofyear")
+        dff = dff.sort_values(["dayofyear", "Ops Time"])
 
         # Construct new dataframe ndf with the x-axis-column and y-axis-column as dataframe columns
         ndf = (
@@ -152,6 +152,7 @@ def register_callbacks(app):
             hover_name="Company",
             hover_data=[
                 "Activity Group Id",
+                "Ops Time",
                 "Product Category",
                 "Product",
                 "VIN",
@@ -286,7 +287,7 @@ def register_callbacks(app):
             x="Ops Time",
             y="Value",
             range_y=[min_y, max_y],
-            color="Product Category",
+            color="Product",
             line_group="Activity Group Id",
             hover_name="Company",
             hover_data=[
@@ -447,6 +448,7 @@ def register_callbacks(app):
                 print(key, value)
             activityGroupId = clickData["points"][0]["customdata"][0]
             if len(clickData["points"][0]["customdata"]) > 3:
+                vin = clickData["points"][0]["customdata"][3]
                 productCategory = clickData["points"][0]["customdata"][4]
                 product = clickData["points"][0]["customdata"][5]
                 date = clickData["points"][0]["customdata"][6]
@@ -456,7 +458,7 @@ def register_callbacks(app):
                     print("hovertext found! " + company)
                 else:
                     company = ""
-                title = f"**Product Category:** {productCategory} **Product:** {product} **Activity Group Id:** {activityGroupId} **Date:** {date:%Y-%m-%d} **Company:** {company}"
+                title = f"**Product Category:** {productCategory} **Product:** {product} **VIN:** {vin} **Activity Group Id:** {activityGroupId} **Date:** {date:%Y-%m-%d} **Company:** {company}"
             else:
                 title = f"**Activity Group Id:** {activityGroupId}"
         else:
