@@ -240,7 +240,7 @@ layout = html.Div(
                     [
                         dcc.Dropdown(
                             id="crossfilter-xaxis-column",
-                            value="Panel 1 Temp",
+                            value="Sensor 1 Temp",
                             className="w3-text-black",
                         ),
                         # dcc.RadioItems(
@@ -259,7 +259,7 @@ layout = html.Div(
                     [
                         dcc.Dropdown(
                             id="crossfilter-yaxis-column",
-                            value="Panel 2 Temp",
+                            value="Sensor 2 Temp",
                             className="w3-text-black",
                         ),
                         # dcc.RadioItems(
