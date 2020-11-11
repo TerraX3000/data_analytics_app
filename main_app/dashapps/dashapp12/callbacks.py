@@ -147,7 +147,7 @@ def register_callbacks(app):
             x=xaxis_column_name,
             y=yaxis_column_name,
             animation_frame="dayofyear",
-            render_mode="webgl",
+            # render_mode="webgl",
             labels={"dayofyear": "Julian Day Number"},
             color="Product",
             hover_name="Company",
