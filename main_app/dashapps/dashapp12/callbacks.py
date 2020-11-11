@@ -225,12 +225,12 @@ def register_callbacks(app):
             activityGroupId = clickData["points"][0]["customdata"][0]
             print("activityGroupId found! " + str(activityGroupId))
         else:
-            activityGroupId = 1
+            activityGroupId = 2
         if "hovertext" in clickData["points"][0]:
             company = clickData["points"][0]["hovertext"]
             print("hovertext found! " + company)
         else:
-            company = "Hollis & Hollis Group Inc (Clarksville, TN)"
+            company = "Standard Construction Company (Whiteville, TN)"
         dff = dff[dff["Parameter"] == xaxis_column_name]
         dff = dff[dff["Activity Group Id"] == activityGroupId]
         title = "<b>{}</b><br>{}".format(company, xaxis_column_name)
@@ -255,7 +255,7 @@ def register_callbacks(app):
             activityGroupId = clickData["points"][0]["customdata"][0]
             print("activityGroupId found! " + str(activityGroupId))
         else:
-            activityGroupId = 1
+            activityGroupId = 2
         dff = dff[dff["Parameter"] == yaxis_column_name]
         dff = dff[dff["Activity Group Id"] == activityGroupId]
         return create_time_series(dff, yaxis_column_name)
@@ -329,12 +329,12 @@ def register_callbacks(app):
             activityGroupId = clickData["points"][0]["customdata"][0]
             print("activityGroupId found! " + str(activityGroupId))
         else:
-            activityGroupId = 1
+            activityGroupId = 2
         if "hovertext" in clickData["points"][0]:
             company = clickData["points"][0]["hovertext"]
             print("hovertext found! " + company)
         else:
-            company = "Hollis & Hollis Group Inc (Clarksville, TN)"
+            company = "Standard Construction Company (Whiteville, TN)"
         dff = df[df["Company"] == company]
         dff = dff[dff["Parameter"] == variable]
         dff = dff[dff["Activity Group Id"] == activityGroupId]
@@ -355,12 +355,12 @@ def register_callbacks(app):
             activityGroupId = clickData["points"][0]["customdata"][0]
             print("activityGroupId found! " + str(activityGroupId))
         else:
-            activityGroupId = 1
+            activityGroupId = 2
         if "hovertext" in clickData["points"][0]:
             company = clickData["points"][0]["hovertext"]
             print("hovertext found! " + company)
         else:
-            company = "Hollis & Hollis Group Inc (Clarksville, TN)"
+            company = "Standard Construction Company (Whiteville, TN)"
         dff = df[df["Company"] == company]
         dff = dff[dff["Parameter"] == variable]
         dff = dff[dff["Activity Group Id"] == activityGroupId]
@@ -497,7 +497,7 @@ def register_callbacks(app):
             company = clickData["points"][0]["hovertext"]
             print("hovertext found! " + company)
         else:
-            company = "Hollis & Hollis Group Inc (Clarksville, TN)"
+            company = "Standard Construction Company (Whiteville, TN)"
         sensorCategory = "Engine"
         title = "Engine"
         return create_sparkline_plot(activityGroupId, sensorCategory, title)
@@ -525,7 +525,7 @@ def register_callbacks(app):
             company = clickData["points"][0]["hovertext"]
             print("hovertext found! " + company)
         else:
-            company = "Hollis & Hollis Group Inc (Clarksville, TN)"
+            company = "Standard Construction Company (Whiteville, TN)"
         sensorCategory = "GPS"
         title = "GPS"
         return create_sparkline_plot(activityGroupId, sensorCategory, title)
@@ -553,7 +553,7 @@ def register_callbacks(app):
             company = clickData["points"][0]["hovertext"]
             print("hovertext found! " + company)
         else:
-            company = "Hollis & Hollis Group Inc (Clarksville, TN)"
+            company = "Standard Construction Company (Whiteville, TN)"
         sensorCategory = "Screed"
         title = "Screed"
         return create_sparkline_plot(activityGroupId, sensorCategory, title)
@@ -581,7 +581,7 @@ def register_callbacks(app):
             company = clickData["points"][0]["hovertext"]
             print("hovertext found! " + company)
         else:
-            company = "Hollis & Hollis Group Inc (Clarksville, TN)"
+            company = "Standard Construction Company (Whiteville, TN)"
         sensorCategory = "Grade"
         title = "Grade"
         return create_sparkline_plot(activityGroupId, sensorCategory, title)

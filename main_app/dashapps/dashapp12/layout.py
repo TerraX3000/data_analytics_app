@@ -158,8 +158,8 @@ layout = html.Div(
             [
                 dcc.Graph(
                     id="multi-line-plot",
-                    clickData={"points": [{"customdata": [0, "gph"]}]},
-                    hoverData={"points": [{"customdata": [0, "gph"]}]},
+                    clickData={"points": [{"customdata": [2, "gph"]}]},
+                    hoverData={"points": [{"customdata": [2, "gph"]}]},
                     className="w3-half",
                 ),
                 html.Div(
@@ -283,8 +283,8 @@ layout = html.Div(
                     [
                         dcc.Graph(
                             id="crossfilter-indicator-scatter",
-                            clickData={"points": [{"customdata": [0]}]},
-                            hoverData={"points": [{"customdata": [0]}]},
+                            clickData={"points": [{"customdata": [2]}]},
+                            hoverData={"points": [{"customdata": [2]}]},
                         ),
                     ],
                     className="w3-half",
