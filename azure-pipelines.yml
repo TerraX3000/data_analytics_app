@@ -25,6 +25,12 @@ variables:
   # Python version: 3.8
   pythonVersion: '3.8'
 
+  # MySQL DB Variables
+  DB_HOST: $(DB_HOST)
+  DB_NAME: $(DB_NAME)
+  DB_USER: $(DB_USER)
+  DB_PASS: $(DB_PASS)
+
 stages:
 - stage: Build
   displayName: Build stage
