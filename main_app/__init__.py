@@ -6,6 +6,7 @@ from sqlalchemy.engine import Engine
 from sqlite3 import Connection as SQLite3Connection
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
+from importlib import import_module
 import pytz
 
 # Third-party libraries for login authorization and management
@@ -18,6 +19,21 @@ import pytz
 #     login_user,
 #     logout_user,
 # )
+
+
+def register_blueprints(app):
+    for module_name in (
+        "main",
+        "datavisualizationsamples",
+        "datasetManager",
+        "datasetAnalyzer",
+        "researchInfo",
+        "dashapps",
+    ):
+        module = import_module("main_app.{}.routes".format(module_name))
+        module_bp = module_name + "_bp"
+        blueprint = getattr(module, module_bp)
+        app.register_blueprint(blueprint)
 
 
 # This function is necessary to perform cacade deletes in SQLite
@@ -111,19 +127,21 @@ def create_app(config_class):
         #     client_kwargs={"scope": "openid email profile"},
         # )
 
-    from main_app.main.routes import main_bp
-    from main_app.datavisualizationsamples.routes import datavisualizationsamples_bp
-    from main_app.datasetManager.routes import datasetManager_bp
-    from main_app.datasetAnalyzer.routes import datasetAnalyzer_bp
-    from main_app.researchInfo.routes import researchInfo_bp
-    from main_app.dashapps.routes import dashapps_bp
+    register_blueprints(app)
 
-    app.register_blueprint(main_bp)
-    app.register_blueprint(datavisualizationsamples_bp)
-    app.register_blueprint(datasetManager_bp)
-    app.register_blueprint(datasetAnalyzer_bp)
-    app.register_blueprint(researchInfo_bp)
-    app.register_blueprint(dashapps_bp)
+    # from main_app.main.routes import main_bp
+    # from main_app.datavisualizationsamples.routes import datavisualizationsamples_bp
+    # from main_app.datasetManager.routes import datasetManager_bp
+    # from main_app.datasetAnalyzer.routes import datasetAnalyzer_bp
+    # from main_app.researchInfo.routes import researchInfo_bp
+    # from main_app.dashapps.routes import dashapps_bp
+
+    # app.register_blueprint(main_bp)
+    # app.register_blueprint(datavisualizationsamples_bp)
+    # app.register_blueprint(datasetManager_bp)
+    # app.register_blueprint(datasetAnalyzer_bp)
+    # app.register_blueprint(researchInfo_bp)
+    # app.register_blueprint(dashapps_bp)
 
     # Add context processor to make webContent data stored in the database
     # available to all templates by default
