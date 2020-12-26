@@ -86,7 +86,13 @@ stages:
               appName: $(webAppName)
               package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
               
+            env:
+              # MySQL DB Variables
+              DB_HOST: $(DB_HOST)
+              DB_NAME: $(DB_NAME)
+              DB_USER: $(DB_USER)
+              DB_PASS: $(DB_PASS)
+               
               # The following parameter is specific to the Flask example code. You may
               # or may not need a startup command for your app.
-
               startUpCommand: 'gunicorn --bind=0.0.0.0 --workers=4 runAppAzure:app'
